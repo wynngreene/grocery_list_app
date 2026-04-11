@@ -1,0 +1,50 @@
+[
+  {
+    "ingredient_id": "ing_001",
+    "ingredient_name": "Spaghetti Pasta",
+    "normalized_name": "spaghetti pasta",
+    "ingredient_type": "Dry Goods",
+    "default_unit": "box",
+    "default_store": "Walmart"
+  },
+  {
+    "ingredient_id": "ing_002",
+    "ingredient_name": "Ground Beef",
+    "normalized_name": "ground beef",
+    "ingredient_type": "Meat",
+    "default_unit": "lb",
+    "default_store": "Costco"
+  },
+  {
+    "ingredient_id": "ing_003",
+    "ingredient_name": "Tomato Sauce",
+    "normalized_name": "tomato sauce",
+    "ingredient_type": "Sauces",
+    "default_unit": "jar",
+    "default_store": "Walmart"
+  },
+  {
+    "ingredient_id": "ing_004",
+    "ingredient_name": "Taco Shells",
+    "normalized_name": "taco shells",
+    "ingredient_type": "Dry Goods",
+    "default_unit": "box",
+    "default_store": "Walmart"
+  },
+  {
+    "ingredient_id": "ing_005",
+    "ingredient_name": "Lettuce",
+    "normalized_name": "lettuce",
+    "ingredient_type": "Produce",
+    "default_unit": "head",
+    "default_store": "King Soopers"
+  },
+  {
+    "ingredient_id": "ing_006",
+    "ingredient_name": "lettuce",
+    "normalized_name": "lettuce",
+    "ingredient_type": "Produce",
+    "default_unit": "head",
+    "default_store": "King Soopers"
+  }
+]
