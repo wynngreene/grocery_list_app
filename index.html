@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Weekly Grocery App Starter</title>
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+  />
+  <style>
+    body {
+      background: #f7f7f9;
+    }
+
+    .app-shell {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 16px;
+    }
+
+    .meal-card {
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+      border: 0;
+      height: 100%;
+    }
+
+    .meal-thumb {
+      width: 100px;
+      height: 100px;
+      object-fit: cover;
+      border-radius: 12px;
+      background: #e9ecef;
+      flex-shrink: 0;
+    }
+
+    .badge-soft {
+      background: #eef2ff;
+      color: #3b5bdb;
+      border: 1px solid #dbe4ff;
+    }
+
+    .section-card {
+      border: 0;
+      border-radius: 18px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+    }
+
+    .ingredient-row + .ingredient-row {
+      border-top: 1px solid #eee;
+    }
+
+    .list-group-item {
+      border-left: 0;
+      border-right: 0;
+    }
+
+    .tiny-label {
+      font-size: 0.75rem;
+      color: #6c757d;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <div>
+        <h1 class="h3 mb-1">Weekly Grocery App</h1>
+        <p class="text-muted mb-0">Lightweight starter prototype</p>
+      </div>
+      <button class="btn btn-primary" id="generateListBtn">Generate Grocery List</button>
+    </div>
+
+    <ul class="nav nav-pills mb-3" id="appTabs">
+      <li class="nav-item">
+        <button class="nav-link active" data-view="weekView">Week Menu</button>
+      </li>
+      <li class="nav-item">
+        <button class="nav-link" data-view="editView">Edit Meal</button>
+      </li>
+      <li class="nav-item">
+        <button class="nav-link" data-view="groceryView">Grocery List</button>
+      </li>
+      <li class="nav-item">
+        <button class="nav-link" data-view="ingredientsView">All Ingredients</button>
+      </li>
+    </ul>
+
+    <section id="weekView" class="view-section">
+      <div class="card section-card mb-3">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <div>
+              <h2 class="h5 mb-1">Current Week Menu</h2>
+              <p class="text-muted mb-0">Up to 6 meals for the week</p>
+            </div>
+            <span class="badge text-bg-light" id="weekMealCount">0 / 6 meals</span>
+          </div>
+          <div class="row g-3" id="weekMealsGrid"></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="editView" class="view-section d-none">
+      <div class="card section-card">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <div>
+              <h2 class="h5 mb-1">Edit Meal</h2>
+              <p class="text-muted mb-0">Basic starter editor with ingredient suggestions</p>
+            </div>
+          </div>
+
+          <form id="mealForm" novalidate>
+            <div class="row g-3">
+              <div class="col-12 col-md-3">
+                <label class="form-label">Meal Image</label>
+                <div>
+                  <img id="mealPreview" class="meal-thumb" src="https://placehold.co/100x100?text=Meal" alt="Meal preview" />
+                </div>
+              </div>
+
+              <div class="col-12 col-md-9">
+                <div class="mb-3">
+                  <label for="mealTitle" class="form-label">Title</label>
+                  <input id="mealTitle" class="form-control" type="text" />
+                </div>
+                <div class="mb-3">
+                  <label for="mealDescription" class="form-label">Description</label>
+                  <textarea id="mealDescription" class="form-control" rows="3"></textarea>
+                </div>
+                <div class="form-check form-switch">
+                  <input class="form-check-input" type="checkbox" id="mealFavorite" />
+                  <label class="form-check-label" for="mealFavorite">Favorite meal</label>
+                </div>
+                <div class="form-check form-switch">
+                  <input class="form-check-input" type="checkbox" id="mealActive" />
+                  <label class="form-check-label" for="mealActive">Active meal</label>
+                </div>
+              </div>
+            </div>
+
+            <hr class="my-4" />
+
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <div>
+                <h3 class="h6 mb-0">Ingredients</h3>
+              </div>
+              <button class="btn btn-sm btn-outline-primary" type="button" id="addIngredientBtn">Add Ingredient</button>
+            </div>
+
+            <div id="ingredientEditorList"></div>
+
+            <div class="mt-3 d-flex gap-2">
+              <button class="btn btn-success" type="submit">Save Meal</button>
+              <button class="btn btn-outline-secondary" type="button" id="resetEditorBtn">Reset</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <section id="groceryView" class="view-section d-none">
+      <div class="card section-card">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <div>
+              <h2 class="h5 mb-1">Weekly Grocery List</h2>
+              <p class="text-muted mb-0">Grouped by ingredient type</p>
+            </div>
+          </div>
+          <div id="groceryGroups"></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="ingredientsView" class="view-section d-none">
+      <div class="card section-card">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <div>
+              <h2 class="h5 mb-1">All Ingredients</h2>
+              <p class="text-muted mb-0">Master ingredient library with duplicate hints</p>
+            </div>
+          </div>
+          <div id="allIngredientsList"></div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    const ingredientTypes = [
+      'Produce',
+      'Meat',
+      'Dairy',
+      'Dry Goods',
+      'Spices',
+      'Sauces',
+      'Other'
+    ];
+
+    const stores = ['Walmart', 'Costco', 'Target', 'King Soopers', 'Other'];
+
+    const state = {
+      meals: [
+        {
+          meal_id: 'meal_001',
+          meal_title: 'Spaghetti',
+          meal_description: 'Pasta with meat sauce',
+          meal_image: 'https://placehold.co/100x100?text=Spag',
+          is_current_week: true,
+          is_active: true,
+          is_favorite: true,
+          ingredients: [
+            {
+              meal_ingredient_entry_id: 'entry_001',
+              ingredient_id: 'ing_001',
+              ingredient_name: 'Spaghetti Pasta',
+              ingredient_type: 'Dry Goods',
+              quantity_value: 1,
+              quantity_unit: 'box',
+              store_name: 'Walmart'
+            },
+            {
+              meal_ingredient_entry_id: 'entry_002',
+              ingredient_id: 'ing_002',
+              ingredient_name: 'Ground Beef',
+              ingredient_type: 'Meat',
+              quantity_value: 1,
+              quantity_unit: 'lb',
+              store_name: 'Costco'
+            },
+            {
+              meal_ingredient_entry_id: 'entry_003',
+              ingredient_id: 'ing_003',
+              ingredient_name: 'Tomato Sauce',
+              ingredient_type: 'Sauces',
+              quantity_value: 2,
+              quantity_unit: 'jar',
+              store_name: 'Walmart'
+            }
+          ]
+        },
+        {
+          meal_id: 'meal_002',
+          meal_title: 'Tacos',
+          meal_description: 'Ground beef tacos with toppings',
+          meal_image: 'https://placehold.co/100x100?text=Taco',
+          is_current_week: true,
+          is_active: true,
+          is_favorite: false,
+          ingredients: [
+            {
+              meal_ingredient_entry_id: 'entry_004',
+              ingredient_id: 'ing_002',
+              ingredient_name: 'Ground Beef',
+              ingredient_type: 'Meat',
+              quantity_value: 1,
+              quantity_unit: 'lb',
+              store_name: 'Costco'
+            },
+            {
+              meal_ingredient_entry_id: 'entry_005',
+              ingredient_id: 'ing_004',
+              ingredient_name: 'Taco Shells',
+              ingredient_type: 'Dry Goods',
+              quantity_value: 1,
+              quantity_unit: 'box',
+              store_name: 'Walmart'
+            },
+            {
+              meal_ingredient_entry_id: 'entry_006',
+              ingredient_id: 'ing_005',
+              ingredient_name: 'Lettuce',
+              ingredient_type: 'Produce',
+              quantity_value: 1,
+              quantity_unit: 'head',
+              store_name: 'King Soopers'
+            }
+          ]
+        }
+      ],
+      masterIngredients: [
+        { ingredient_id: 'ing_001', ingredient_name: 'Spaghetti Pasta', normalized_name: 'spaghetti pasta', ingredient_type: 'Dry Goods', default_unit: 'box', default_store: 'Walmart' },
+        { ingredient_id: 'ing_002', ingredient_name: 'Ground Beef', normalized_name: 'ground beef', ingredient_type: 'Meat', default_unit: 'lb', default_store: 'Costco' },
+        { ingredient_id: 'ing_003', ingredient_name: 'Tomato Sauce', normalized_name: 'tomato sauce', ingredient_type: 'Sauces', default_unit: 'jar', default_store: 'Walmart' },
+        { ingredient_id: 'ing_004', ingredient_name: 'Taco Shells', normalized_name: 'taco shells', ingredient_type: 'Dry Goods', default_unit: 'box', default_store: 'Walmart' },
+        { ingredient_id: 'ing_005', ingredient_name: 'Lettuce', normalized_name: 'lettuce', ingredient_type: 'Produce', default_unit: 'head', default_store: 'King Soopers' },
+        { ingredient_id: 'ing_006', ingredient_name: 'lettuce', normalized_name: 'lettuce', ingredient_type: 'Produce', default_unit: 'head', default_store: 'King Soopers' }
+      ],
+      selectedMealId: 'meal_001',
+      groceryList: []
+    };
+
+    function normalizeName(value) {
+      return value.toLowerCase().trim().replace(/\s+/g, ' ');
+    }
+
+    function showView(viewId) {
+      document.querySelectorAll('.view-section').forEach(section => {
+        section.classList.toggle('d-none', section.id !== viewId);
+      });
+
+      document.querySelectorAll('#appTabs .nav-link').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.view === viewId);
+      });
+    }
+
+    function renderWeekMeals() {
+      const weekMeals = state.meals.filter(meal => meal.is_current_week).slice(0, 6);
+      const grid = document.getElementById('weekMealsGrid');
+      const count = document.getElementById('weekMealCount');
+      count.textContent = `${weekMeals.length} / 6 meals`;
+
+      grid.innerHTML = weekMeals.map(meal => `
+        <div class="col-12 col-md-6">
+          <div class="card meal-card">
+            <div class="card-body d-flex gap-3 align-items-start">
+              <img class="meal-thumb" src="${meal.meal_image}" alt="${meal.meal_title}" />
+              <div class="flex-grow-1">
+                <div class="d-flex justify-content-between align-items-start gap-2">
+                  <div>
+                    <h3 class="h6 mb-1">${meal.meal_title}</h3>
+                    <p class="text-muted small mb-2">${meal.meal_description}</p>
+                  </div>
+                  <button class="btn btn-sm btn-outline-primary" onclick="openMealEditor('${meal.meal_id}')">Edit</button>
+                </div>
+                <div class="d-flex flex-wrap gap-2">
+                  <span class="badge ${meal.is_active ? 'text-bg-success' : 'text-bg-secondary'}">
+                    ${meal.is_active ? 'Active' : 'Inactive'}
+                  </span>
+                  ${meal.is_favorite ? '<span class="badge badge-soft">Favorite</span>' : ''}
+                  <span class="badge text-bg-light">Current Week</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function ingredientSuggestions(inputValue) {
+      const normalized = normalizeName(inputValue);
+      if (!normalized) return [];
+      return state.masterIngredients.filter(item =>
+        item.normalized_name.includes(normalized)
+      ).slice(0, 5);
+    }
+
+    function renderMealEditor() {
+      const meal = state.meals.find(item => item.meal_id === state.selectedMealId);
+      if (!meal) return;
+
+      document.getElementById('mealTitle').value = meal.meal_title;
+      document.getElementById('mealDescription').value = meal.meal_description;
+      document.getElementById('mealPreview').src = meal.meal_image;
+      document.getElementById('mealFavorite').checked = meal.is_favorite;
+      document.getElementById('mealActive').checked = meal.is_active;
+
+      const list = document.getElementById('ingredientEditorList');
+      list.innerHTML = meal.ingredients.map((ingredient, index) => {
+        const suggestions = ingredientSuggestions(ingredient.ingredient_name);
+        const suggestionsHtml = suggestions.length
+          ? `<div class="small text-muted mt-1">Suggestions: ${suggestions.map(s => s.ingredient_name).join(', ')}</div>`
+          : `<div class="small text-warning mt-1">No match found. Confirm as a new ingredient before saving later.</div>`;
+
+        return `
+          <div class="ingredient-row py-3">
+            <div class="row g-2 align-items-end">
+              <div class="col-12 col-md-4">
+                <label class="form-label">Ingredient</label>
+                <input class="form-control ingredient-name" data-index="${index}" value="${ingredient.ingredient_name}" />
+                ${suggestionsHtml}
+              </div>
+              <div class="col-4 col-md-2">
+                <label class="form-label">Qty</label>
+                <input class="form-control ingredient-qty" data-index="${index}" type="number" min="0" step="0.25" value="${ingredient.quantity_value}" />
+              </div>
+              <div class="col-4 col-md-2">
+                <label class="form-label">Unit</label>
+                <input class="form-control ingredient-unit" data-index="${index}" value="${ingredient.quantity_unit}" />
+              </div>
+              <div class="col-4 col-md-2">
+                <label class="form-label">Type</label>
+                <select class="form-select ingredient-type" data-index="${index}">
+                  ${ingredientTypes.map(type => `<option value="${type}" ${ingredient.ingredient_type === type ? 'selected' : ''}>${type}</option>`).join('')}
+                </select>
+              </div>
+              <div class="col-12 col-md-2">
+                <label class="form-label">Store</label>
+                <select class="form-select ingredient-store" data-index="${index}">
+                  ${stores.map(store => `<option value="${store}" ${ingredient.store_name === store ? 'selected' : ''}>${store}</option>`).join('')}
+                </select>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function openMealEditor(mealId) {
+      state.selectedMealId = mealId;
+      renderMealEditor();
+      showView('editView');
+    }
+
+    function addIngredientToSelectedMeal() {
+      const meal = state.meals.find(item => item.meal_id === state.selectedMealId);
+      if (!meal) return;
+
+      meal.ingredients.push({
+        meal_ingredient_entry_id: `entry_${Date.now()}`,
+        ingredient_id: '',
+        ingredient_name: '',
+        ingredient_type: 'Other',
+        quantity_value: 1,
+        quantity_unit: 'count',
+        store_name: 'Walmart'
+      });
+
+      renderMealEditor();
+    }
+
+    function saveSelectedMeal(event) {
+      event.preventDefault();
+      const meal = state.meals.find(item => item.meal_id === state.selectedMealId);
+      if (!meal) return;
+
+      meal.meal_title = document.getElementById('mealTitle').value.trim();
+      meal.meal_description = document.getElementById('mealDescription').value.trim();
+      meal.is_favorite = document.getElementById('mealFavorite').checked;
+      meal.is_active = document.getElementById('mealActive').checked;
+
+      const nameInputs = [...document.querySelectorAll('.ingredient-name')];
+      const qtyInputs = [...document.querySelectorAll('.ingredient-qty')];
+      const unitInputs = [...document.querySelectorAll('.ingredient-unit')];
+      const typeInputs = [...document.querySelectorAll('.ingredient-type')];
+      const storeInputs = [...document.querySelectorAll('.ingredient-store')];
+
+      meal.ingredients = nameInputs.map((input, index) => {
+        const ingredientName = input.value.trim();
+        const normalized = normalizeName(ingredientName);
+        const existing = state.masterIngredients.find(item => item.normalized_name === normalized);
+
+        return {
+          meal_ingredient_entry_id: meal.ingredients[index]?.meal_ingredient_entry_id || `entry_${Date.now()}_${index}`,
+          ingredient_id: existing ? existing.ingredient_id : '',
+          ingredient_name: ingredientName,
+          ingredient_type: typeInputs[index].value,
+          quantity_value: Number(qtyInputs[index].value) || 1,
+          quantity_unit: unitInputs[index].value.trim() || 'count',
+          store_name: storeInputs[index].value
+        };
+      });
+
+      renderWeekMeals();
+      renderMealEditor();
+      generateGroceryList();
+      renderAllIngredients();
+      alert('Meal saved. New ingredients still need a later confirm/create flow.');
+    }
+
+    function generateGroceryList() {
+      const weekMeals = state.meals.filter(meal => meal.is_current_week);
+      const merged = new Map();
+
+      weekMeals.forEach(meal => {
+        meal.ingredients.forEach(ingredient => {
+          const key = `${normalizeName(ingredient.ingredient_name)}__${ingredient.quantity_unit}__${ingredient.store_name}`;
+          if (!merged.has(key)) {
+            merged.set(key, {
+              ingredient_name: ingredient.ingredient_name,
+              ingredient_type: ingredient.ingredient_type,
+              total_quantity_value: Number(ingredient.quantity_value) || 0,
+              quantity_unit: ingredient.quantity_unit,
+              store_name: ingredient.store_name,
+              meals: [meal.meal_title],
+              checked: false
+            });
+          } else {
+            const existing = merged.get(key);
+            existing.total_quantity_value += Number(ingredient.quantity_value) || 0;
+            if (!existing.meals.includes(meal.meal_title)) {
+              existing.meals.push(meal.meal_title);
+            }
+          }
+        });
+      });
+
+      state.groceryList = [...merged.values()];
+      renderGroceryList();
+    }
+
+    function renderGroceryList() {
+      const wrapper = document.getElementById('groceryGroups');
+      if (!state.groceryList.length) {
+        wrapper.innerHTML = '<p class="text-muted mb-0">No grocery items yet.</p>';
+        return;
+      }
+
+      const grouped = state.groceryList.reduce((acc, item) => {
+        if (!acc[item.ingredient_type]) acc[item.ingredient_type] = [];
+        acc[item.ingredient_type].push(item);
+        return acc;
+      }, {});
+
+      wrapper.innerHTML = Object.entries(grouped).map(([group, items]) => `
+        <div class="mb-4">
+          <div class="tiny-label mb-2">${group}</div>
+          <ul class="list-group">
+            ${items.map(item => `
+              <li class="list-group-item">
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" />
+                  <label class="form-check-label w-100">
+                    <div class="d-flex justify-content-between gap-2">
+                      <strong>${item.ingredient_name}</strong>
+                      <span>${item.total_quantity_value} ${item.quantity_unit}</span>
+                    </div>
+                    <div class="small text-muted">Store: ${item.store_name} · Meals: ${item.meals.join(', ')}</div>
+                  </label>
+                </div>
+              </li>
+            `).join('')}
+          </ul>
+        </div>
+      `).join('');
+    }
+
+    function renderAllIngredients() {
+      const wrapper = document.getElementById('allIngredientsList');
+      const nameCounts = {};
+
+      state.masterIngredients.forEach(item => {
+        nameCounts[item.normalized_name] = (nameCounts[item.normalized_name] || 0) + 1;
+      });
+
+      wrapper.innerHTML = `
+        <ul class="list-group">
+          ${state.masterIngredients.map(item => {
+            const isDuplicate = nameCounts[item.normalized_name] > 1;
+            return `
+              <li class="list-group-item">
+                <div class="d-flex justify-content-between align-items-start gap-3">
+                  <div>
+                    <div><strong>${item.ingredient_name}</strong></div>
+                    <div class="small text-muted">${item.ingredient_type} · ${item.default_unit} · ${item.default_store}</div>
+                  </div>
+                  <div>
+                    ${isDuplicate ? '<span class="badge text-bg-warning">Possible Duplicate</span>' : '<span class="badge text-bg-light">OK</span>'}
+                  </div>
+                </div>
+              </li>
+            `;
+          }).join('')}
+        </ul>
+      `;
+    }
+
+    function attachEvents() {
+      document.querySelectorAll('#appTabs .nav-link').forEach(btn => {
+        btn.addEventListener('click', () => showView(btn.dataset.view));
+      });
+
+      document.getElementById('addIngredientBtn').addEventListener('click', addIngredientToSelectedMeal);
+      document.getElementById('mealForm').addEventListener('submit', saveSelectedMeal);
+      document.getElementById('generateListBtn').addEventListener('click', () => {
+        generateGroceryList();
+        showView('groceryView');
+      });
+      document.getElementById('resetEditorBtn').addEventListener('click', renderMealEditor);
+    }
+
+    function init() {
+      attachEvents();
+      renderWeekMeals();
+      renderMealEditor();
+      generateGroceryList();
+      renderAllIngredients();
+    }
+
+    init();
+  </script>
+</body>
+</html>
