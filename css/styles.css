@@ -1,0 +1,11 @@
+css/styles.css
+body {
+  background: #f5f5f7;
+}
+
+.meal-card {
+  border-radius: 12px;
+  padding: 10px;
+  background: white;
+  margin-bottom: 10px;
+}
