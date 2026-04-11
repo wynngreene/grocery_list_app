@@ -1,20 +1,78 @@
 [
   {
-    "meal_id": "1",
+    "meal_id": "meal_001",
     "meal_title": "Spaghetti",
-    "meal_description": "Pasta with sauce",
+    "meal_description": "Pasta with meat sauce",
+    "meal_image": "https://placehold.co/100x100?text=Spag",
+    "is_current_week": true,
+    "is_active": true,
+    "is_favorite": true,
     "ingredients": [
-      { "ingredient_name": "Pasta", "quantity_value": 1, "quantity_unit": "box" },
-      { "ingredient_name": "Tomato Sauce", "quantity_value": 2, "quantity_unit": "jar" }
+      {
+        "meal_ingredient_entry_id": "entry_001",
+        "ingredient_id": "ing_001",
+        "ingredient_name": "Spaghetti Pasta",
+        "ingredient_type": "Dry Goods",
+        "quantity_value": 1,
+        "quantity_unit": "box",
+        "store_name": "Walmart"
+      },
+      {
+        "meal_ingredient_entry_id": "entry_002",
+        "ingredient_id": "ing_002",
+        "ingredient_name": "Ground Beef",
+        "ingredient_type": "Meat",
+        "quantity_value": 1,
+        "quantity_unit": "lb",
+        "store_name": "Costco"
+      },
+      {
+        "meal_ingredient_entry_id": "entry_003",
+        "ingredient_id": "ing_003",
+        "ingredient_name": "Tomato Sauce",
+        "ingredient_type": "Sauces",
+        "quantity_value": 2,
+        "quantity_unit": "jar",
+        "store_name": "Walmart"
+      }
     ]
   },
   {
-    "meal_id": "2",
+    "meal_id": "meal_002",
     "meal_title": "Tacos",
-    "meal_description": "Taco night",
+    "meal_description": "Ground beef tacos with toppings",
+    "meal_image": "https://placehold.co/100x100?text=Taco",
+    "is_current_week": true,
+    "is_active": true,
+    "is_favorite": false,
     "ingredients": [
-      { "ingredient_name": "Taco Shells", "quantity_value": 1, "quantity_unit": "box" },
-      { "ingredient_name": "Ground Beef", "quantity_value": 1, "quantity_unit": "lb" }
+      {
+        "meal_ingredient_entry_id": "entry_004",
+        "ingredient_id": "ing_002",
+        "ingredient_name": "Ground Beef",
+        "ingredient_type": "Meat",
+        "quantity_value": 1,
+        "quantity_unit": "lb",
+        "store_name": "Costco"
+      },
+      {
+        "meal_ingredient_entry_id": "entry_005",
+        "ingredient_id": "ing_004",
+        "ingredient_name": "Taco Shells",
+        "ingredient_type": "Dry Goods",
+        "quantity_value": 1,
+        "quantity_unit": "box",
+        "store_name": "Walmart"
+      },
+      {
+        "meal_ingredient_entry_id": "entry_006",
+        "ingredient_id": "ing_005",
+        "ingredient_name": "Lettuce",
+        "ingredient_type": "Produce",
+        "quantity_value": 1,
+        "quantity_unit": "head",
+        "store_name": "King Soopers"
+      }
     ]
   }
 ]
