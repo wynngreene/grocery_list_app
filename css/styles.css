@@ -1,11 +1,54 @@
-css/styles.css
 body {
-  background: #f5f5f7;
+  background: #f7f7f9;
+}
+
+.app-shell {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 16px;
 }
 
 .meal-card {
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  border: 0;
+  height: 100%;
+}
+
+.meal-thumb {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
   border-radius: 12px;
-  padding: 10px;
-  background: white;
-  margin-bottom: 10px;
+  background: #e9ecef;
+  flex-shrink: 0;
+}
+
+.badge-soft {
+  background: #eef2ff;
+  color: #3b5bdb;
+  border: 1px solid #dbe4ff;
+}
+
+.section-card {
+  border: 0;
+  border-radius: 18px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+}
+
+.ingredient-row + .ingredient-row {
+  border-top: 1px solid #eee;
+}
+
+.list-group-item {
+  border-left: 0;
+  border-right: 0;
+}
+
+.tiny-label {
+  font-size: 0.75rem;
+  color: #6c757d;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
 }
