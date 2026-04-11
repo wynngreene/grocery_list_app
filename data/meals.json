@@ -1,0 +1,20 @@
+[
+  {
+    "meal_id": "1",
+    "meal_title": "Spaghetti",
+    "meal_description": "Pasta with sauce",
+    "ingredients": [
+      { "ingredient_name": "Pasta", "quantity_value": 1, "quantity_unit": "box" },
+      { "ingredient_name": "Tomato Sauce", "quantity_value": 2, "quantity_unit": "jar" }
+    ]
+  },
+  {
+    "meal_id": "2",
+    "meal_title": "Tacos",
+    "meal_description": "Taco night",
+    "ingredients": [
+      { "ingredient_name": "Taco Shells", "quantity_value": 1, "quantity_unit": "box" },
+      { "ingredient_name": "Ground Beef", "quantity_value": 1, "quantity_unit": "lb" }
+    ]
+  }
+]
