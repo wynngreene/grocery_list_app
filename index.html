@@ -44,6 +44,22 @@
       flex-shrink: 0;
     }
 
+    .recipe-hero-img {
+      width: 100%;
+      max-height: 260px;
+      object-fit: cover;
+      border-radius: 18px;
+      background: #e9ecef;
+    }
+
+    .direction-img {
+      width: 100%;
+      max-height: 220px;
+      object-fit: cover;
+      border-radius: 14px;
+      background: #e9ecef;
+    }
+
     .badge-soft {
       background: #eef2ff;
       color: #3b5bdb;
@@ -141,6 +157,18 @@
       </div>
     </section>
 
+    <section id="recipeDetailView" class="view-section d-none">
+      <div class="card section-card mb-3">
+        <div class="card-body">
+          <button class="btn btn-sm btn-outline-secondary mb-3" id="backToWeekBtn">
+            ← Back to Week Menu
+          </button>
+
+          <div id="recipeDetailContent"></div>
+        </div>
+      </div>
+    </section>
+
     <section id="editView" class="view-section d-none">
       <div class="card section-card">
         <div class="card-body">
@@ -218,6 +246,8 @@
     </section>
   </div>
 
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
   <script>
     const ingredientTypes = [
       'Produce',
@@ -237,7 +267,7 @@
           meal_id: 'meal_001',
           meal_title: 'Spaghetti',
           meal_description: 'Pasta with meat sauce',
-          meal_image: 'https://placehold.co/100x100?text=Spag',
+          meal_image: 'https://placehold.co/900x400?text=Spaghetti',
           is_current_week: true,
           is_active: true,
           is_favorite: true,
@@ -270,13 +300,39 @@
               quantity_unit: 'jar',
               store_name: 'Walmart'
             }
-          ]
+          ],
+          directions: [
+            {
+              step_id: 'spaghetti_step_001',
+              step_title: 'Boil Pasta',
+              step_image: 'https://placehold.co/600x300?text=Boil+Pasta',
+              step_text: 'Bring water to a boil and cook spaghetti pasta according to package directions.'
+            },
+            {
+              step_id: 'spaghetti_step_002',
+              step_title: 'Cook Meat Sauce',
+              step_image: 'https://placehold.co/600x300?text=Meat+Sauce',
+              step_text: 'Brown ground beef in a pan, then add tomato sauce and simmer.'
+            },
+            {
+              step_id: 'spaghetti_step_003',
+              step_title: 'Combine and Serve',
+              step_image: 'https://placehold.co/600x300?text=Serve+Spaghetti',
+              step_text: 'Drain pasta, top with meat sauce, and serve warm.'
+            }
+          ],
+          credit: {
+            created_by: 'Family Recipe',
+            shared_by: 'Paradise Grocers',
+            source: 'Home Kitchen',
+            date_added: '2026'
+          }
         },
         {
           meal_id: 'meal_002',
           meal_title: 'Tacos',
           meal_description: 'Ground beef tacos with toppings',
-          meal_image: 'https://placehold.co/100x100?text=Taco',
+          meal_image: 'https://placehold.co/900x400?text=Tacos',
           is_current_week: true,
           is_active: true,
           is_favorite: false,
@@ -309,13 +365,39 @@
               quantity_unit: 'head',
               store_name: 'King Soopers'
             }
-          ]
+          ],
+          directions: [
+            {
+              step_id: 'taco_step_001',
+              step_title: 'Prepare Toppings',
+              step_image: 'https://placehold.co/600x300?text=Taco+Toppings',
+              step_text: 'Wash and chop lettuce, prepare cheese, salsa, and any extra toppings.'
+            },
+            {
+              step_id: 'taco_step_002',
+              step_title: 'Cook Ground Beef',
+              step_image: 'https://placehold.co/600x300?text=Cook+Beef',
+              step_text: 'Cook ground beef in a skillet over medium heat until browned. Drain excess grease if needed.'
+            },
+            {
+              step_id: 'taco_step_003',
+              step_title: 'Build Tacos',
+              step_image: 'https://placehold.co/600x300?text=Build+Tacos',
+              step_text: 'Warm taco shells, fill with beef, then add lettuce and toppings.'
+            }
+          ],
+          credit: {
+            created_by: 'Family Recipe',
+            shared_by: 'Paradise Grocers',
+            source: 'Home Kitchen',
+            date_added: '2026'
+          }
         },
         {
           meal_id: 'meal_003',
           meal_title: 'Chicken Salad',
           meal_description: 'Cold lunch salad with chicken and greens',
-          meal_image: 'https://placehold.co/100x100?text=Salad',
+          meal_image: 'https://placehold.co/900x400?text=Chicken+Salad',
           is_current_week: false,
           is_active: true,
           is_favorite: true,
@@ -339,7 +421,33 @@
               quantity_unit: 'head',
               store_name: 'King Soopers'
             }
-          ]
+          ],
+          directions: [
+            {
+              step_id: 'salad_step_001',
+              step_title: 'Prepare Greens',
+              step_image: 'https://placehold.co/600x300?text=Prepare+Greens',
+              step_text: 'Wash and chop lettuce and any additional vegetables.'
+            },
+            {
+              step_id: 'salad_step_002',
+              step_title: 'Add Chicken',
+              step_image: 'https://placehold.co/600x300?text=Add+Chicken',
+              step_text: 'Slice cooked chicken breast and place over greens.'
+            },
+            {
+              step_id: 'salad_step_003',
+              step_title: 'Finish Salad',
+              step_image: 'https://placehold.co/600x300?text=Finish+Salad',
+              step_text: 'Add dressing, toss gently, and serve cold.'
+            }
+          ],
+          credit: {
+            created_by: 'Family Recipe',
+            shared_by: 'Paradise Grocers',
+            source: 'Home Kitchen',
+            date_added: '2026'
+          }
         }
       ],
 
@@ -390,17 +498,13 @@
                     <h3 class="h6 mb-1">${meal.meal_title}</h3>
                     <p class="text-muted small mb-2">${meal.meal_description}</p>
                   </div>
-
-                  <button class="btn btn-sm btn-outline-primary" onclick="openMealEditor('${meal.meal_id}')">
-                    Edit
-                  </button>
                 </div>
 
                 <div class="d-flex gap-1 mb-2 fs-5">
                   ${(meal.recipe_icons || []).map(icon => `<span>${icon}</span>`).join('')}
                 </div>
 
-                <div class="d-flex flex-wrap gap-2">
+                <div class="d-flex flex-wrap gap-2 mb-2">
                   <span class="badge ${meal.is_active ? 'text-bg-success' : 'text-bg-secondary'}">
                     ${meal.is_active ? 'Active' : 'Inactive'}
                   </span>
@@ -408,6 +512,16 @@
                   ${meal.is_favorite ? '<span class="badge badge-soft">Favorite</span>' : ''}
 
                   <span class="badge text-bg-light">Current Week</span>
+                </div>
+
+                <div class="d-flex gap-2 flex-wrap">
+                  <button class="btn btn-sm btn-outline-dark" onclick="openRecipeDetail('${meal.meal_id}')">
+                    View Recipe
+                  </button>
+
+                  <button class="btn btn-sm btn-outline-primary" onclick="openMealEditor('${meal.meal_id}')">
+                    Edit
+                  </button>
                 </div>
               </div>
             </div>
@@ -438,6 +552,7 @@
                 </div>
 
                 <div class="d-flex gap-2 flex-wrap">
+                  <button class="btn btn-sm btn-outline-dark" onclick="openRecipeDetail('${meal.meal_id}')">View</button>
                   <button class="btn btn-sm btn-outline-primary" onclick="openMealEditor('${meal.meal_id}')">Edit</button>
                   <button class="btn btn-sm btn-outline-success" onclick="exportRecipeCard('${meal.meal_id}')">Export</button>
                   <button class="btn btn-sm ${meal.is_current_week ? 'btn-success' : 'btn-outline-success'}" onclick="toggleCurrentWeek('${meal.meal_id}')">
@@ -449,6 +564,115 @@
           </div>
         </div>
       `).join('');
+    }
+
+    function openRecipeDetail(mealId) {
+      state.selectedMealId = mealId;
+      renderRecipeDetail();
+      showView('recipeDetailView');
+    }
+
+    function renderRecipeDetail() {
+      const meal = state.meals.find(item => item.meal_id === state.selectedMealId);
+      const wrapper = document.getElementById('recipeDetailContent');
+
+      if (!meal || !wrapper) return;
+
+      const directions = meal.directions || [];
+      const credit = meal.credit || {
+        created_by: 'Unknown',
+        shared_by: 'Paradise Grocers',
+        source: 'Family Recipe',
+        date_added: '2026'
+      };
+
+      wrapper.innerHTML = `
+        <div class="recipe-detail-header mb-4">
+          <img class="recipe-hero-img mb-3" src="${meal.meal_image}" alt="${meal.meal_title}" />
+
+          <div class="d-flex justify-content-between align-items-start gap-3 flex-wrap">
+            <div>
+              <h2 class="h3 mb-1">${meal.meal_title}</h2>
+              <p class="text-muted mb-2">${meal.meal_description}</p>
+
+              <div class="d-flex gap-2 fs-3 mb-3">
+                ${(meal.recipe_icons || []).map(icon => `<span>${icon}</span>`).join('')}
+              </div>
+            </div>
+
+            <button class="btn btn-outline-primary" onclick="openMealEditor('${meal.meal_id}')">
+              Edit Recipe
+            </button>
+          </div>
+        </div>
+
+        <div class="card section-card mb-3">
+          <div class="card-body">
+            <h3 class="h5 mb-3">01 — Ingredients</h3>
+
+            <ul class="list-group">
+              ${meal.ingredients.map(ingredient => `
+                <li class="list-group-item d-flex justify-content-between">
+                  <span>${ingredient.ingredient_name}</span>
+                  <span class="text-muted">
+                    ${ingredient.quantity_value} ${ingredient.quantity_unit}
+                  </span>
+                </li>
+              `).join('')}
+            </ul>
+          </div>
+        </div>
+
+        <div class="card section-card mb-3">
+          <div class="card-body">
+            <h3 class="h5 mb-3">02 — Directions</h3>
+
+            <div class="accordion" id="directionsAccordion">
+              ${directions.map((step, index) => `
+                <div class="accordion-item">
+                  <h2 class="accordion-header" id="heading_${step.step_id}">
+                    <button
+                      class="accordion-button ${index === 0 ? '' : 'collapsed'}"
+                      type="button"
+                      data-bs-toggle="collapse"
+                      data-bs-target="#collapse_${step.step_id}"
+                      aria-expanded="${index === 0 ? 'true' : 'false'}"
+                      aria-controls="collapse_${step.step_id}"
+                    >
+                      ${index + 1}. ${step.step_title}
+                    </button>
+                  </h2>
+
+                  <div
+                    id="collapse_${step.step_id}"
+                    class="accordion-collapse collapse ${index === 0 ? 'show' : ''}"
+                    aria-labelledby="heading_${step.step_id}"
+                    data-bs-parent="#directionsAccordion"
+                  >
+                    <div class="accordion-body">
+                      ${step.step_image ? `<img class="direction-img mb-3" src="${step.step_image}" alt="${step.step_title}" />` : ''}
+                      <p class="mb-0">${step.step_text}</p>
+                    </div>
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        </div>
+
+        <div class="card section-card">
+          <div class="card-body">
+            <h3 class="h5 mb-3">03 — Credit</h3>
+
+            <div class="small text-muted">
+              <div><strong>Created By:</strong> ${credit.created_by}</div>
+              <div><strong>Shared By:</strong> ${credit.shared_by}</div>
+              <div><strong>Source:</strong> ${credit.source}</div>
+              <div><strong>Date Added:</strong> ${credit.date_added}</div>
+            </div>
+          </div>
+        </div>
+      `;
     }
 
     function ingredientSuggestions(inputValue) {
@@ -595,6 +819,7 @@
       renderWeekMeals();
       renderRecipeCards();
       renderMealEditor();
+      renderRecipeDetail();
       generateGroceryList();
       renderAllIngredients();
 
@@ -721,7 +946,9 @@
         recipe_title: meal.meal_title,
         recipe_description: meal.meal_description,
         recipe_icons: meal.recipe_icons,
-        ingredients: meal.ingredients
+        ingredients: meal.ingredients,
+        directions: meal.directions,
+        credit: meal.credit
       };
 
       const recipeText = JSON.stringify(recipeCard, null, 2);
@@ -751,6 +978,10 @@
 
       document.getElementById('shareRecipeBtn').addEventListener('click', () => {
         exportRecipeCard(state.selectedMealId);
+      });
+
+      document.getElementById('backToWeekBtn').addEventListener('click', () => {
+        showView('weekView');
       });
     }
 
