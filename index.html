@@ -34,6 +34,24 @@
       background: linear-gradient(135deg, #e8fff0, #fff9e6);
     }
 
+    #appTabs {
+      display: flex;
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      gap: 8px;
+      padding-bottom: 8px;
+      scrollbar-width: thin;
+    }
+
+    #appTabs .nav-item {
+      flex: 0 0 auto;
+    }
+
+    #appTabs .nav-link {
+      white-space: nowrap;
+      border-radius: 999px;
+    }
+
     .meal-thumb,
     .recipe-thumb {
       width: 100px;
@@ -89,6 +107,42 @@
       border-left: 0;
       border-right: 0;
     }
+
+    @media (max-width: 576px) {
+      .app-shell {
+        padding: 12px;
+      }
+
+      .brand-card .card-body {
+        padding: 18px 12px;
+      }
+
+      .brand-card h1 {
+        font-size: 1.6rem;
+      }
+
+      .symbol-pill {
+        font-size: 1.2rem;
+        padding: 5px 10px;
+      }
+
+      .meal-card .card-body,
+      .recipe-card .card-body {
+        flex-direction: column;
+      }
+
+      .meal-thumb,
+      .recipe-thumb {
+        width: 100%;
+        height: 180px;
+      }
+
+      .top-actions {
+        flex-direction: column;
+        align-items: stretch !important;
+        gap: 8px;
+      }
+    }
   </style>
 </head>
 
@@ -109,7 +163,7 @@
       </div>
     </div>
 
-    <div class="d-flex justify-content-between align-items-center mb-3">
+    <div class="d-flex justify-content-between align-items-center mb-3 top-actions">
       <button class="btn btn-primary" id="generateListBtn">Generate Grocery List</button>
       <button class="btn btn-outline-success" id="shareRecipeBtn">Share Recipe Card</button>
     </div>
@@ -173,7 +227,20 @@
       <div class="card section-card">
         <div class="card-body">
           <h2 class="h5 mb-1">Edit Meal</h2>
-          <p class="text-muted">Basic starter editor with ingredient suggestions</p>
+          <p class="text-muted">Choose a meal, edit it, or view the full recipe.</p>
+
+          <div class="row g-2 align-items-end mb-3">
+            <div class="col-12 col-md-8">
+              <label for="mealSelect" class="form-label">Choose Meal to Edit</label>
+              <select id="mealSelect" class="form-select"></select>
+            </div>
+
+            <div class="col-12 col-md-4">
+              <button class="btn btn-outline-dark w-100" type="button" id="viewSelectedRecipeBtn">
+                View Recipe
+              </button>
+            </div>
+          </div>
 
           <form id="mealForm" novalidate>
             <div class="row g-3">
@@ -479,6 +546,17 @@
       });
     }
 
+    function renderMealSelect() {
+      const select = document.getElementById('mealSelect');
+      if (!select) return;
+
+      select.innerHTML = state.meals.map(meal => `
+        <option value="${meal.meal_id}" ${meal.meal_id === state.selectedMealId ? 'selected' : ''}>
+          ${meal.meal_title}
+        </option>
+      `).join('');
+    }
+
     function renderWeekMeals() {
       const weekMeals = state.meals.filter(meal => meal.is_current_week).slice(0, 6);
       const grid = document.getElementById('weekMealsGrid');
@@ -493,12 +571,8 @@
               <img class="meal-thumb" src="${meal.meal_image}" alt="${meal.meal_title}" />
 
               <div class="flex-grow-1">
-                <div class="d-flex justify-content-between align-items-start gap-2">
-                  <div>
-                    <h3 class="h6 mb-1">${meal.meal_title}</h3>
-                    <p class="text-muted small mb-2">${meal.meal_description}</p>
-                  </div>
-                </div>
+                <h3 class="h6 mb-1">${meal.meal_title}</h3>
+                <p class="text-muted small mb-2">${meal.meal_description}</p>
 
                 <div class="d-flex gap-1 mb-2 fs-5">
                   ${(meal.recipe_icons || []).map(icon => `<span>${icon}</span>`).join('')}
@@ -568,6 +642,7 @@
 
     function openRecipeDetail(mealId) {
       state.selectedMealId = mealId;
+      renderMealSelect();
       renderRecipeDetail();
       showView('recipeDetailView');
     }
@@ -686,6 +761,8 @@
     }
 
     function renderMealEditor() {
+      renderMealSelect();
+
       const meal = state.meals.find(item => item.meal_id === state.selectedMealId);
       if (!meal) return;
 
@@ -744,6 +821,7 @@
 
     function openMealEditor(mealId) {
       state.selectedMealId = mealId;
+      renderMealSelect();
       renderMealEditor();
       showView('editView');
     }
@@ -983,10 +1061,20 @@
       document.getElementById('backToWeekBtn').addEventListener('click', () => {
         showView('weekView');
       });
+
+      document.getElementById('mealSelect').addEventListener('change', event => {
+        state.selectedMealId = event.target.value;
+        renderMealEditor();
+      });
+
+      document.getElementById('viewSelectedRecipeBtn').addEventListener('click', () => {
+        openRecipeDetail(state.selectedMealId);
+      });
     }
 
     function init() {
       attachEvents();
+      renderMealSelect();
       renderWeekMeals();
       renderRecipeCards();
       renderMealEditor();
