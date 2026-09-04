@@ -46,5 +46,13 @@
     "ingredient_type": "Produce",
     "default_unit": "head",
     "default_store": "King Soopers"
+  },
+  {
+    "ingredient_id": "ing_007",
+    "ingredient_name": "Chicken Breast",
+    "normalized_name": "chicken breast",
+    "ingredient_type": "Meat",
+    "default_unit": "lb",
+    "default_store": "Costco"
   }
 ]

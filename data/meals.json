@@ -3,10 +3,11 @@
     "meal_id": "meal_001",
     "meal_title": "Spaghetti",
     "meal_description": "Pasta with meat sauce",
-    "meal_image": "https://placehold.co/100x100?text=Spag",
+    "meal_image": "https://placehold.co/900x400?text=Spaghetti",
     "is_current_week": true,
     "is_active": true,
     "is_favorite": true,
+    "recipe_icons": ["🍽", "🥩", "🥘"],
     "ingredients": [
       {
         "meal_ingredient_entry_id": "entry_001",
@@ -35,16 +36,43 @@
         "quantity_unit": "jar",
         "store_name": "Walmart"
       }
-    ]
+    ],
+    "directions": [
+      {
+        "step_id": "spaghetti_step_001",
+        "step_title": "Boil Pasta",
+        "step_image": "https://placehold.co/600x300?text=Boil+Pasta",
+        "step_text": "Bring water to a boil and cook spaghetti pasta according to package directions."
+      },
+      {
+        "step_id": "spaghetti_step_002",
+        "step_title": "Cook Meat Sauce",
+        "step_image": "https://placehold.co/600x300?text=Meat+Sauce",
+        "step_text": "Brown ground beef in a pan, then add tomato sauce and simmer."
+      },
+      {
+        "step_id": "spaghetti_step_003",
+        "step_title": "Combine and Serve",
+        "step_image": "https://placehold.co/600x300?text=Serve+Spaghetti",
+        "step_text": "Drain pasta, top with meat sauce, and serve warm."
+      }
+    ],
+    "credit": {
+      "created_by": "Family Recipe",
+      "shared_by": "Paradise Grocers",
+      "source": "Home Kitchen",
+      "date_added": "2026"
+    }
   },
   {
     "meal_id": "meal_002",
     "meal_title": "Tacos",
     "meal_description": "Ground beef tacos with toppings",
-    "meal_image": "https://placehold.co/100x100?text=Taco",
+    "meal_image": "https://placehold.co/900x400?text=Tacos",
     "is_current_week": true,
     "is_active": true,
     "is_favorite": false,
+    "recipe_icons": ["🍽", "🥩", "🍳"],
     "ingredients": [
       {
         "meal_ingredient_entry_id": "entry_004",
@@ -73,6 +101,88 @@
         "quantity_unit": "head",
         "store_name": "King Soopers"
       }
-    ]
+    ],
+    "directions": [
+      {
+        "step_id": "taco_step_001",
+        "step_title": "Prepare Toppings",
+        "step_image": "https://placehold.co/600x300?text=Taco+Toppings",
+        "step_text": "Wash and chop lettuce, prepare cheese, salsa, and any extra toppings."
+      },
+      {
+        "step_id": "taco_step_002",
+        "step_title": "Cook Ground Beef",
+        "step_image": "https://placehold.co/600x300?text=Cook+Beef",
+        "step_text": "Cook ground beef in a skillet over medium heat until browned. Drain excess grease if needed."
+      },
+      {
+        "step_id": "taco_step_003",
+        "step_title": "Build Tacos",
+        "step_image": "https://placehold.co/600x300?text=Build+Tacos",
+        "step_text": "Warm taco shells, fill with beef, then add lettuce and toppings."
+      }
+    ],
+    "credit": {
+      "created_by": "Family Recipe",
+      "shared_by": "Paradise Grocers",
+      "source": "Home Kitchen",
+      "date_added": "2026"
+    }
+  },
+  {
+    "meal_id": "meal_003",
+    "meal_title": "Chicken Salad",
+    "meal_description": "Cold lunch salad with chicken and greens",
+    "meal_image": "https://placehold.co/900x400?text=Chicken+Salad",
+    "is_current_week": false,
+    "is_active": true,
+    "is_favorite": true,
+    "recipe_icons": ["🥪", "🍗", "❄️"],
+    "ingredients": [
+      {
+        "meal_ingredient_entry_id": "entry_007",
+        "ingredient_id": "ing_007",
+        "ingredient_name": "Chicken Breast",
+        "ingredient_type": "Meat",
+        "quantity_value": 2,
+        "quantity_unit": "lb",
+        "store_name": "Costco"
+      },
+      {
+        "meal_ingredient_entry_id": "entry_008",
+        "ingredient_id": "ing_005",
+        "ingredient_name": "Lettuce",
+        "ingredient_type": "Produce",
+        "quantity_value": 1,
+        "quantity_unit": "head",
+        "store_name": "King Soopers"
+      }
+    ],
+    "directions": [
+      {
+        "step_id": "salad_step_001",
+        "step_title": "Prepare Greens",
+        "step_image": "https://placehold.co/600x300?text=Prepare+Greens",
+        "step_text": "Wash and chop lettuce and any additional vegetables."
+      },
+      {
+        "step_id": "salad_step_002",
+        "step_title": "Add Chicken",
+        "step_image": "https://placehold.co/600x300?text=Add+Chicken",
+        "step_text": "Slice cooked chicken breast and place over greens."
+      },
+      {
+        "step_id": "salad_step_003",
+        "step_title": "Finish Salad",
+        "step_image": "https://placehold.co/600x300?text=Finish+Salad",
+        "step_text": "Add dressing, toss gently, and serve cold."
+      }
+    ],
+    "credit": {
+      "created_by": "Family Recipe",
+      "shared_by": "Paradise Grocers",
+      "source": "Home Kitchen",
+      "date_added": "2026"
+    }
   }
 ]
