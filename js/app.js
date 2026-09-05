@@ -1,16 +1,32 @@
 const ingredientTypes = [
   'Produce',
+  'Fruit',
   'Meat',
+  'Seafood',
   'Dairy',
+  'Eggs',
+  'Bakery',
   'Dry Goods',
+  'Canned Goods',
+  'Frozen',
+  'Herbs',
   'Spices',
   'Sauces',
+  'Condiments',
+  'Beverages',
+  'Snacks',
+  'Household',
   'Other'
 ];
 
 const stores = ['Walmart', 'Costco', 'Target', 'King Soopers', 'Other'];
 
 const STORAGE_KEY = 'weekly_grocery_app_state';
+
+// Bump this whenever the starter data (data/meals.json / data/ingredients.json)
+// changes. A saved localStorage state from an older version is treated as
+// stale and discarded so everyone picks up the new defaults automatically.
+const DATA_VERSION = 2;
 
 const defaultState = {
   meals: [],
@@ -44,7 +60,15 @@ function loadSavedState() {
   if (!saved) return false;
 
   try {
-    state = JSON.parse(saved);
+    const parsed = JSON.parse(saved);
+
+    // A saved state from an older data version is stale — discard it so
+    // fresh defaults get loaded instead of resurrecting old placeholder data.
+    if (parsed.dataVersion !== DATA_VERSION) {
+      return false;
+    }
+
+    state = parsed;
     return true;
   } catch (error) {
     console.error('Failed to parse saved state:', error);
@@ -84,7 +108,8 @@ async function loadInitialData() {
       meals,
       masterIngredients,
       selectedMealId: meals[0]?.meal_id || '',
-      groceryList: []
+      groceryList: [],
+      dataVersion: DATA_VERSION
     };
 
     saveState();

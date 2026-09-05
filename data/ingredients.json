@@ -1,58 +1,34 @@
 [
-  {
-    "ingredient_id": "ing_001",
-    "ingredient_name": "Spaghetti Pasta",
-    "normalized_name": "spaghetti pasta",
-    "ingredient_type": "Dry Goods",
-    "default_unit": "box",
-    "default_store": "Walmart"
-  },
-  {
-    "ingredient_id": "ing_002",
-    "ingredient_name": "Ground Beef",
-    "normalized_name": "ground beef",
-    "ingredient_type": "Meat",
-    "default_unit": "lb",
-    "default_store": "Costco"
-  },
-  {
-    "ingredient_id": "ing_003",
-    "ingredient_name": "Tomato Sauce",
-    "normalized_name": "tomato sauce",
-    "ingredient_type": "Sauces",
-    "default_unit": "jar",
-    "default_store": "Walmart"
-  },
-  {
-    "ingredient_id": "ing_004",
-    "ingredient_name": "Taco Shells",
-    "normalized_name": "taco shells",
-    "ingredient_type": "Dry Goods",
-    "default_unit": "box",
-    "default_store": "Walmart"
-  },
-  {
-    "ingredient_id": "ing_005",
-    "ingredient_name": "Lettuce",
-    "normalized_name": "lettuce",
-    "ingredient_type": "Produce",
-    "default_unit": "head",
-    "default_store": "King Soopers"
-  },
-  {
-    "ingredient_id": "ing_006",
-    "ingredient_name": "lettuce",
-    "normalized_name": "lettuce",
-    "ingredient_type": "Produce",
-    "default_unit": "head",
-    "default_store": "King Soopers"
-  },
-  {
-    "ingredient_id": "ing_007",
-    "ingredient_name": "Chicken Breast",
-    "normalized_name": "chicken breast",
-    "ingredient_type": "Meat",
-    "default_unit": "lb",
-    "default_store": "Costco"
-  }
+  { "ingredient_id": "ing_001", "ingredient_name": "Spaghetti Noodles", "normalized_name": "spaghetti noodles", "ingredient_type": "Dry Goods", "default_unit": "box", "default_store": "Walmart" },
+  { "ingredient_id": "ing_002", "ingredient_name": "Ground Beef", "normalized_name": "ground beef", "ingredient_type": "Meat", "default_unit": "lb", "default_store": "Costco" },
+  { "ingredient_id": "ing_003", "ingredient_name": "Mushrooms", "normalized_name": "mushrooms", "ingredient_type": "Produce", "default_unit": "oz", "default_store": "King Soopers" },
+  { "ingredient_id": "ing_004", "ingredient_name": "Yellow Onion", "normalized_name": "yellow onion", "ingredient_type": "Produce", "default_unit": "whole", "default_store": "King Soopers" },
+  { "ingredient_id": "ing_005", "ingredient_name": "Garlic", "normalized_name": "garlic", "ingredient_type": "Produce", "default_unit": "cloves", "default_store": "King Soopers" },
+  { "ingredient_id": "ing_006", "ingredient_name": "Marinara Sauce", "normalized_name": "marinara sauce", "ingredient_type": "Sauces", "default_unit": "jar", "default_store": "Walmart" },
+  { "ingredient_id": "ing_007", "ingredient_name": "Beef Sausage", "normalized_name": "beef sausage", "ingredient_type": "Meat", "default_unit": "lb", "default_store": "Costco" },
+  { "ingredient_id": "ing_008", "ingredient_name": "Bell Pepper", "normalized_name": "bell pepper", "ingredient_type": "Produce", "default_unit": "whole", "default_store": "King Soopers" },
+  { "ingredient_id": "ing_009", "ingredient_name": "Rice", "normalized_name": "rice", "ingredient_type": "Dry Goods", "default_unit": "cup", "default_store": "Walmart" },
+  { "ingredient_id": "ing_010", "ingredient_name": "Chicken Breast", "normalized_name": "chicken breast", "ingredient_type": "Meat", "default_unit": "lb", "default_store": "Costco" },
+  { "ingredient_id": "ing_011", "ingredient_name": "Mixed Greens", "normalized_name": "mixed greens", "ingredient_type": "Produce", "default_unit": "bag", "default_store": "King Soopers" },
+  { "ingredient_id": "ing_012", "ingredient_name": "Cherry Tomatoes", "normalized_name": "cherry tomatoes", "ingredient_type": "Produce", "default_unit": "pint", "default_store": "King Soopers" },
+  { "ingredient_id": "ing_013", "ingredient_name": "Cucumber", "normalized_name": "cucumber", "ingredient_type": "Produce", "default_unit": "whole", "default_store": "King Soopers" },
+  { "ingredient_id": "ing_014", "ingredient_name": "Vinaigrette Dressing", "normalized_name": "vinaigrette dressing", "ingredient_type": "Sauces", "default_unit": "bottle", "default_store": "Walmart" },
+  { "ingredient_id": "ing_015", "ingredient_name": "BBQ Sauce", "normalized_name": "bbq sauce", "ingredient_type": "Sauces", "default_unit": "bottle", "default_store": "Walmart" },
+  { "ingredient_id": "ing_016", "ingredient_name": "Sandwich Buns", "normalized_name": "sandwich buns", "ingredient_type": "Bakery", "default_unit": "pack", "default_store": "Walmart" },
+  { "ingredient_id": "ing_017", "ingredient_name": "Cheddar Cheese", "normalized_name": "cheddar cheese", "ingredient_type": "Dairy", "default_unit": "oz", "default_store": "King Soopers" },
+  { "ingredient_id": "ing_018", "ingredient_name": "Coleslaw Mix", "normalized_name": "coleslaw mix", "ingredient_type": "Produce", "default_unit": "bag", "default_store": "King Soopers" },
+  { "ingredient_id": "ing_019", "ingredient_name": "Coleslaw Dressing", "normalized_name": "coleslaw dressing", "ingredient_type": "Condiments", "default_unit": "bottle", "default_store": "Walmart" },
+  { "ingredient_id": "ing_020", "ingredient_name": "Canned Diced Tomatoes", "normalized_name": "canned diced tomatoes", "ingredient_type": "Canned Goods", "default_unit": "can", "default_store": "Walmart" },
+  { "ingredient_id": "ing_021", "ingredient_name": "Celery", "normalized_name": "celery", "ingredient_type": "Produce", "default_unit": "stalks", "default_store": "King Soopers" },
+  { "ingredient_id": "ing_022", "ingredient_name": "Chicken Broth", "normalized_name": "chicken broth", "ingredient_type": "Canned Goods", "default_unit": "oz", "default_store": "Walmart" },
+  { "ingredient_id": "ing_023", "ingredient_name": "Garlic Seasoning", "normalized_name": "garlic seasoning", "ingredient_type": "Spices", "default_unit": "tsp", "default_store": "Walmart" },
+  { "ingredient_id": "ing_024", "ingredient_name": "Onion Seasoning", "normalized_name": "onion seasoning", "ingredient_type": "Spices", "default_unit": "tsp", "default_store": "Walmart" },
+  { "ingredient_id": "ing_025", "ingredient_name": "Italian Seasoning", "normalized_name": "italian seasoning", "ingredient_type": "Spices", "default_unit": "tsp", "default_store": "Walmart" },
+  { "ingredient_id": "ing_026", "ingredient_name": "Jalapenos", "normalized_name": "jalapenos", "ingredient_type": "Produce", "default_unit": "whole", "default_store": "King Soopers" },
+  { "ingredient_id": "ing_027", "ingredient_name": "Potatoes", "normalized_name": "potatoes", "ingredient_type": "Produce", "default_unit": "whole", "default_store": "King Soopers" },
+  { "ingredient_id": "ing_028", "ingredient_name": "Zucchini", "normalized_name": "zucchini", "ingredient_type": "Produce", "default_unit": "whole", "default_store": "King Soopers" },
+  { "ingredient_id": "ing_029", "ingredient_name": "Grits", "normalized_name": "grits", "ingredient_type": "Dry Goods", "default_unit": "cup", "default_store": "Walmart" },
+  { "ingredient_id": "ing_030", "ingredient_name": "Breakfast Sausage", "normalized_name": "breakfast sausage", "ingredient_type": "Meat", "default_unit": "lb", "default_store": "Costco" },
+  { "ingredient_id": "ing_031", "ingredient_name": "Eggs", "normalized_name": "eggs", "ingredient_type": "Eggs", "default_unit": "count", "default_store": "King Soopers" },
+  { "ingredient_id": "ing_032", "ingredient_name": "Butter", "normalized_name": "butter", "ingredient_type": "Dairy", "default_unit": "stick", "default_store": "King Soopers" }
 ]
