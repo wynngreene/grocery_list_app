@@ -7,6 +7,8 @@
     "is_current_week": true,
     "is_active": true,
     "is_favorite": false,
+    "day_of_week": "",
+    "meal_time": "",
     "recipe_icons": ["🍝", "🥩", "🍳"],
     "ingredients": [
       { "meal_ingredient_entry_id": "entry_001", "ingredient_id": "ing_001", "ingredient_name": "Spaghetti Noodles", "ingredient_type": "Dry Goods", "quantity_value": 1, "quantity_unit": "box", "store_name": "Walmart" },
@@ -33,6 +35,8 @@
     "is_current_week": true,
     "is_active": true,
     "is_favorite": false,
+    "day_of_week": "",
+    "meal_time": "",
     "recipe_icons": ["🍚", "🌭", "🍳"],
     "ingredients": [
       { "meal_ingredient_entry_id": "entry_007", "ingredient_id": "ing_007", "ingredient_name": "Beef Sausage", "ingredient_type": "Meat", "quantity_value": 1, "quantity_unit": "lb", "store_name": "Costco" },
@@ -57,6 +61,8 @@
     "is_current_week": true,
     "is_active": true,
     "is_favorite": false,
+    "day_of_week": "",
+    "meal_time": "",
     "recipe_icons": ["🥗", "🍗", "❄️"],
     "ingredients": [
       { "meal_ingredient_entry_id": "entry_012", "ingredient_id": "ing_010", "ingredient_name": "Chicken Breast", "ingredient_type": "Meat", "quantity_value": 1.5, "quantity_unit": "lb", "store_name": "Costco" },
@@ -81,6 +87,8 @@
     "is_current_week": true,
     "is_active": true,
     "is_favorite": false,
+    "day_of_week": "",
+    "meal_time": "",
     "recipe_icons": ["🥪", "🍗", "🍲"],
     "ingredients": [
       { "meal_ingredient_entry_id": "entry_017", "ingredient_id": "ing_010", "ingredient_name": "Chicken Breast", "ingredient_type": "Meat", "quantity_value": 2, "quantity_unit": "lb", "store_name": "Costco" },
@@ -106,6 +114,8 @@
     "is_current_week": true,
     "is_active": true,
     "is_favorite": false,
+    "day_of_week": "",
+    "meal_time": "",
     "recipe_icons": ["🍜", "🥦", "🍲"],
     "ingredients": [
       { "meal_ingredient_entry_id": "entry_023", "ingredient_id": "ing_020", "ingredient_name": "Canned Diced Tomatoes", "ingredient_type": "Canned Goods", "quantity_value": 1, "quantity_unit": "can", "store_name": "Walmart" },
@@ -137,6 +147,8 @@
     "is_current_week": true,
     "is_active": true,
     "is_favorite": false,
+    "day_of_week": "",
+    "meal_time": "Breakfast",
     "recipe_icons": ["🌅", "🌭", "🍳"],
     "ingredients": [
       { "meal_ingredient_entry_id": "entry_034", "ingredient_id": "ing_029", "ingredient_name": "Grits", "ingredient_type": "Dry Goods", "quantity_value": 1, "quantity_unit": "cup", "store_name": "Walmart" },
