@@ -26,7 +26,7 @@ const STORAGE_KEY = 'weekly_grocery_app_state';
 // Shown on the intro screen. Bump APP_VERSION / APP_LAST_UPDATED together
 // with every update/change that ships — this is the running version number,
 // not tied to DATA_VERSION (which only tracks the starter-data shape).
-const APP_VERSION = '1.2';
+const APP_VERSION = '1.3';
 const APP_LAST_UPDATED = 'September 7, 2026';
 
 // Bump this whenever the starter data (data/meals.json / data/ingredients.json)
@@ -73,7 +73,9 @@ const defaultState = {
   masterIngredients: [],
   selectedMealId: '',
   groceryList: [],
-  weekSort: 'day'
+  weekSort: 'day',
+  grocerySort: 'category',
+  ingredientSort: 'name'
 };
 
 let state = structuredClone(defaultState);
@@ -188,6 +190,8 @@ async function loadInitialData() {
       selectedMealId: meals[0]?.meal_id || '',
       groceryList: [],
       weekSort: 'day',
+      grocerySort: 'category',
+      ingredientSort: 'name',
       dataVersion: DATA_VERSION
     };
 
@@ -345,19 +349,16 @@ function renderWeekMeals() {
 
   grid.innerHTML = weekMeals.map(meal => `
     <div class="col-12 col-md-6">
-      <div class="card meal-card h-100">
-        <div class="card-body d-flex gap-3 align-items-start">
-          <img class="meal-thumb" src="${escapeHtml(meal.meal_image || 'https://placehold.co/100x100?text=Meal')}" alt="${escapeHtml(meal.meal_title)}" />
+      <div class="card meal-card h-100 entry-clickable" onclick="openRecipeDetail('${meal.meal_id}')">
+        <div class="card-body">
+          <div class="entry-top-row">
+            <img class="meal-thumb" src="${escapeHtml(meal.meal_image || 'https://placehold.co/100x100?text=Meal')}" alt="${escapeHtml(meal.meal_title)}" />
 
-          <div class="flex-grow-1">
-            <h3 class="h6 mb-1">${escapeHtml(meal.meal_title)}</h3>
-            <p class="text-muted small mb-2">${escapeHtml(meal.meal_description)}</p>
+            <div class="d-flex flex-wrap gap-2 align-items-center">
+              <div class="d-flex gap-1 fs-5">
+                ${(meal.recipe_icons || []).map(icon => `<span>${escapeHtml(icon)}</span>`).join('')}
+              </div>
 
-            <div class="d-flex gap-1 mb-2 fs-5">
-              ${(meal.recipe_icons || []).map(icon => `<span>${escapeHtml(icon)}</span>`).join('')}
-            </div>
-
-            <div class="d-flex flex-wrap gap-2 mb-2">
               <span class="badge ${meal.is_active ? 'text-bg-success' : 'text-bg-secondary'}">
                 ${meal.is_active ? 'Active' : 'Inactive'}
               </span>
@@ -366,16 +367,17 @@ function renderWeekMeals() {
               ${meal.meal_time ? `<span class="badge ${mealTimeBadgeClass[meal.meal_time] || 'text-bg-light'}">${escapeHtml(meal.meal_time)}</span>` : ''}
               ${meal.day_of_week ? `<span class="badge text-bg-light">${escapeHtml(meal.day_of_week)}</span>` : ''}
             </div>
+          </div>
 
-            <div class="d-flex gap-2 flex-wrap">
-              <button class="btn btn-sm btn-outline-dark" onclick="openRecipeDetail('${meal.meal_id}')">
-                View Recipe
-              </button>
-
-              <button class="btn btn-sm btn-outline-primary" onclick="openMealEditor('${meal.meal_id}')">
-                Edit
-              </button>
+          <div class="entry-bottom-row">
+            <div>
+              <h3 class="h6 mb-1">${escapeHtml(meal.meal_title)}</h3>
+              <p class="text-muted small mb-0">${escapeHtml(meal.meal_description)}</p>
             </div>
+
+            <button class="btn btn-sm btn-outline-dark entry-view-btn" onclick="event.stopPropagation(); openRecipeDetail('${meal.meal_id}')">
+              View
+            </button>
           </div>
         </div>
       </div>
@@ -930,13 +932,90 @@ function generateGroceryList() {
   renderGroceryList();
 }
 
+// Orders a set of grocery items alphabetically by ingredient name — used both
+// for the flat "Name" sort mode and to order items inside each group.
+function sortGroceryItems(items) {
+  return [...items].sort((a, b) => a.ingredient_name.localeCompare(b.ingredient_name));
+}
+
+// Renders one grocery-list row, including the "A, B, total C" line showing
+// which recipe(s) an item is for and its combined total amount.
+function groceryItemRowHtml(item) {
+  const mealsLabel = item.meals.map(escapeHtml).join(', ');
+
+  return `
+    <li class="list-group-item">
+      <div class="form-check d-flex align-items-start gap-2">
+        <input class="form-check-input grocery-check mt-1" type="checkbox" data-key="${escapeHtml(item.key)}" ${item.checked ? 'checked' : ''} />
+        ${ingredientIconMarkup(item, 'grocery-icon')}
+        <label class="form-check-label w-100 ${item.checked ? 'text-decoration-line-through text-muted' : ''}">
+          <div class="d-flex justify-content-between gap-2">
+            <strong>${escapeHtml(item.ingredient_name)}</strong>
+            <span>${item.total_quantity_value} ${escapeHtml(item.quantity_unit)}</span>
+          </div>
+
+          <div class="small text-muted">
+            ${mealsLabel}, total ${item.total_quantity_value} ${escapeHtml(item.quantity_unit)}
+          </div>
+
+          <div class="small text-muted">Store: ${escapeHtml(item.store_name)}</div>
+        </label>
+      </div>
+    </li>
+  `;
+}
+
 function renderGroceryList() {
   const wrapper = document.getElementById('groceryGroups');
+  const sortSelect = document.getElementById('grocerySortSelect');
+  if (sortSelect) sortSelect.value = state.grocerySort || 'category';
 
   if (!state.groceryList.length) {
     wrapper.innerHTML = '<p class="text-muted mb-0">No grocery items yet. Add meals to your current week first.</p>';
     return;
   }
+
+  const mode = state.grocerySort || 'category';
+
+  if (mode === 'name') {
+    wrapper.innerHTML = `
+      <ul class="list-group">
+        ${sortGroceryItems(state.groceryList).map(groceryItemRowHtml).join('')}
+      </ul>
+    `;
+    return;
+  }
+
+  const groupField = mode === 'store' ? 'store_name' : 'ingredient_type';
+
+  const grouped = state.groceryList.reduce((acc, item) => {
+    const key = item[groupField];
+    if (!acc[key]) acc[key] = [];
+    acc[key].push(item);
+    return acc;
+  }, {});
+
+  wrapper.innerHTML = Object.entries(grouped)
+    .sort((a, b) => a[0].localeCompare(b[0]))
+    .map(([group, items]) => `
+      <div class="mb-4">
+        <div class="tiny-label mb-2">${escapeHtml(group)}</div>
+        <ul class="list-group">
+          ${sortGroceryItems(items).map(groceryItemRowHtml).join('')}
+        </ul>
+      </div>
+    `).join('');
+}
+
+// Formats the current grocery list as readable plain text and copies it to
+// the clipboard (with a prompt() fallback), mirroring exportRecipeCard().
+function shareGroceryList() {
+  if (!state.groceryList.length) {
+    alert('Your grocery list is empty. Generate it first from the Week Menu.');
+    return;
+  }
+
+  const lines = ['Pangea Grocery List (PGL) — Weekly Grocery List', ''];
 
   const grouped = state.groceryList.reduce((acc, item) => {
     if (!acc[item.ingredient_type]) acc[item.ingredient_type] = [];
@@ -944,35 +1023,75 @@ function renderGroceryList() {
     return acc;
   }, {});
 
-  wrapper.innerHTML = Object.entries(grouped).map(([group, items]) => `
-    <div class="mb-4">
-      <div class="tiny-label mb-2">${escapeHtml(group)}</div>
-      <ul class="list-group">
-        ${items.map(item => `
-          <li class="list-group-item">
-            <div class="form-check d-flex align-items-start gap-2">
-              <input class="form-check-input grocery-check mt-1" type="checkbox" data-key="${escapeHtml(item.key)}" ${item.checked ? 'checked' : ''} />
-              ${ingredientIconMarkup(item, 'grocery-icon')}
-              <label class="form-check-label w-100 ${item.checked ? 'text-decoration-line-through text-muted' : ''}">
-                <div class="d-flex justify-content-between gap-2">
-                  <strong>${escapeHtml(item.ingredient_name)}</strong>
-                  <span>${item.total_quantity_value} ${escapeHtml(item.quantity_unit)}</span>
-                </div>
+  Object.entries(grouped).forEach(([group, items]) => {
+    lines.push(`${group}:`);
+    sortGroceryItems(items).forEach(item => {
+      const mealsLabel = item.meals.join(', ');
+      const checkedMark = item.checked ? ' [x]' : '';
+      lines.push(`  - ${item.ingredient_name} — ${mealsLabel}, total ${item.total_quantity_value} ${item.quantity_unit} · ${item.store_name}${checkedMark}`);
+    });
+    lines.push('');
+  });
 
-                <div class="small text-muted">
-                  Store: ${escapeHtml(item.store_name)} · Meals: ${item.meals.map(escapeHtml).join(', ')}
-                </div>
-              </label>
-            </div>
-          </li>
-        `).join('')}
-      </ul>
-    </div>
-  `).join('');
+  const listText = lines.join('\n').trim();
+
+  if (navigator.clipboard?.writeText) {
+    navigator.clipboard.writeText(listText)
+      .then(() => alert('Grocery list copied to clipboard.'))
+      .catch(() => {
+        prompt('Copy this grocery list:', listText);
+      });
+  } else {
+    prompt('Copy this grocery list:', listText);
+  }
+}
+
+// Returns the unique list of meal titles (in meal order) whose ingredients
+// reference the given master ingredient — matched by ingredient_id first,
+// falling back to a normalized-name match. Powers the "origin of recipe"
+// info on the All Ingredients page.
+function getMealsUsingIngredient(ingredient) {
+  if (!ingredient) return [];
+
+  const normalized = normalizeName(ingredient.ingredient_name);
+  const titles = [];
+
+  state.meals.forEach(meal => {
+    const usesIt = meal.ingredients.some(entry => {
+      if (ingredient.ingredient_id && entry.ingredient_id && entry.ingredient_id === ingredient.ingredient_id) {
+        return true;
+      }
+      return Boolean(normalized) && normalizeName(entry.ingredient_name) === normalized;
+    });
+
+    if (usesIt && !titles.includes(meal.meal_title)) {
+      titles.push(meal.meal_title);
+    }
+  });
+
+  return titles;
+}
+
+function sortMasterIngredients(items) {
+  const mode = state.ingredientSort || 'name';
+  const sorted = [...items];
+
+  if (mode === 'type') {
+    sorted.sort((a, b) => a.ingredient_type.localeCompare(b.ingredient_type) || a.ingredient_name.localeCompare(b.ingredient_name));
+  } else if (mode === 'store') {
+    sorted.sort((a, b) => a.default_store.localeCompare(b.default_store) || a.ingredient_name.localeCompare(b.ingredient_name));
+  } else {
+    sorted.sort((a, b) => a.ingredient_name.localeCompare(b.ingredient_name));
+  }
+
+  return sorted;
 }
 
 function renderAllIngredients() {
   const wrapper = document.getElementById('allIngredientsList');
+  const sortSelect = document.getElementById('ingredientSortSelect');
+  if (sortSelect) sortSelect.value = state.ingredientSort || 'name';
+
   const nameCounts = {};
 
   state.masterIngredients.forEach(item => {
@@ -984,10 +1103,13 @@ function renderAllIngredients() {
     return;
   }
 
+  const sorted = sortMasterIngredients(state.masterIngredients);
+
   wrapper.innerHTML = `
     <ul class="list-group">
-      ${state.masterIngredients.map(item => {
+      ${sorted.map(item => {
         const isDuplicate = nameCounts[item.normalized_name] > 1;
+        const usedInMeals = getMealsUsingIngredient(item);
 
         return `
           <li class="list-group-item">
@@ -998,6 +1120,9 @@ function renderAllIngredients() {
                   <div><strong>${escapeHtml(item.ingredient_name)}</strong></div>
                   <div class="small text-muted">
                     ${escapeHtml(item.ingredient_type)} · ${escapeHtml(item.default_unit)} · ${escapeHtml(item.default_store)}
+                  </div>
+                  <div class="small text-muted">
+                    ${usedInMeals.length ? `Used in: ${usedInMeals.map(escapeHtml).join(', ')}` : 'Not used in any current recipe'}
                   </div>
                 </div>
               </div>
@@ -1105,6 +1230,20 @@ function attachEvents() {
     item.checked = event.target.checked;
     saveState();
     renderGroceryList();
+  });
+
+  document.getElementById('grocerySortSelect').addEventListener('change', event => {
+    state.grocerySort = event.target.value;
+    saveState();
+    renderGroceryList();
+  });
+
+  document.getElementById('shareGroceryListBtn').addEventListener('click', shareGroceryList);
+
+  document.getElementById('ingredientSortSelect').addEventListener('change', event => {
+    state.ingredientSort = event.target.value;
+    saveState();
+    renderAllIngredients();
   });
 }
 

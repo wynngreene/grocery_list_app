@@ -116,6 +116,36 @@ body {
   height: 100%;
 }
 
+.entry-clickable {
+  cursor: pointer;
+  transition: transform 0.1s ease, box-shadow 0.15s ease;
+}
+
+.entry-clickable:hover,
+.entry-clickable:focus-within {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+}
+
+.entry-top-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.entry-bottom-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-top: 10px;
+}
+
+.entry-view-btn {
+  flex-shrink: 0;
+}
+
 .brand-card {
   background: linear-gradient(135deg, #e8fff0, #fff9e6);
 }
@@ -187,6 +217,49 @@ body {
 
 .ingredient-row + .ingredient-row {
   border-top: 1px solid #eee;
+}
+
+/* Week calendar strip (subtle date/week-number display above the week menu) */
+.week-calendar-strip {
+  text-align: center;
+}
+
+.week-calendar-label {
+  font-size: 0.78rem;
+  color: #6c757d;
+  margin-bottom: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.week-calendar-days {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+}
+
+.week-day-pill {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #6c757d;
+  background: #eef1f4;
+}
+
+.week-day-today {
+  background: #40916c;
+  color: #fff;
+}
+
+/* Week menu quick day/meal-time controls */
+.week-schedule-controls .form-select-sm {
+  width: auto;
+  min-width: 108px;
 }
 
 /* Ingredient icons (TheMealDB image, or an emoji fallback by category) */
