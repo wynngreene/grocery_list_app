@@ -24,14 +24,26 @@ const stores = ['Walmart', 'Costco', 'Target', 'King Soopers', 'Other'];
 const STORAGE_KEY = 'weekly_grocery_app_state';
 
 // Shown on the intro screen. Bump APP_VERSION / APP_LAST_UPDATED together
-// whenever you ship a meaningful update.
-const APP_VERSION = '1.0';
-const APP_LAST_UPDATED = 'September 2026';
+// with every update/change that ships — this is the running version number,
+// not tied to DATA_VERSION (which only tracks the starter-data shape).
+const APP_VERSION = '1.1';
+const APP_LAST_UPDATED = 'September 7, 2026';
 
 // Bump this whenever the starter data (data/meals.json / data/ingredients.json)
 // changes. A saved localStorage state from an older version is treated as
 // stale and discarded so everyone picks up the new defaults automatically.
-const DATA_VERSION = 4;
+const DATA_VERSION = 5;
+
+const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+const mealTimes = ['Breakfast', 'Lunch', 'Dinner'];
+
+const mealTimeBadgeClass = {
+  'Breakfast': 'text-bg-warning',
+  'Lunch': 'text-bg-info',
+  'Dinner': 'text-bg-primary'
+};
+
+const MAX_WEEK_MEALS = 7;
 
 // Emoji shown for an ingredient when it has no image_url (or its image fails
 // to load), keyed by ingredient_type so the fallback is still meaningful.
@@ -60,7 +72,8 @@ const defaultState = {
   meals: [],
   masterIngredients: [],
   selectedMealId: '',
-  groceryList: []
+  groceryList: [],
+  weekSort: 'day'
 };
 
 let state = structuredClone(defaultState);
@@ -174,6 +187,7 @@ async function loadInitialData() {
       masterIngredients,
       selectedMealId: meals[0]?.meal_id || '',
       groceryList: [],
+      weekSort: 'day',
       dataVersion: DATA_VERSION
     };
 
@@ -235,11 +249,91 @@ function renderIngredientDatalist() {
     .join('');
 }
 
+// ISO-8601 week number for a given date (week 1 is the week containing the
+// year's first Thursday). Used only for the subtle "Week NN" label.
+function getISOWeekNumber(date) {
+  const d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+  const dayNum = d.getUTCDay() || 7;
+  d.setUTCDate(d.getUTCDate() + 4 - dayNum);
+  const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+  return Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
+}
+
+// Renders the subtle week-calendar strip above the Week Menu list: the
+// current date range (Sun–Sat) and ISO week number, plus a row of day
+// letters with today highlighted. Purely a display — doesn't affect data.
+function renderWeekCalendar() {
+  const wrap = document.getElementById('weekCalendarStrip');
+  if (!wrap) return;
+
+  const today = new Date();
+  const startOfWeek = new Date(today);
+  startOfWeek.setDate(today.getDate() - today.getDay());
+
+  const dayLetters = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
+  const dateFormat = { month: 'short', day: 'numeric' };
+
+  const weekDates = [];
+  for (let i = 0; i < 7; i += 1) {
+    const d = new Date(startOfWeek);
+    d.setDate(startOfWeek.getDate() + i);
+    weekDates.push(d);
+  }
+
+  const pills = weekDates.map((d, i) => {
+    const isToday = d.toDateString() === today.toDateString();
+    return `<span class="week-day-pill ${isToday ? 'week-day-today' : ''}" title="${escapeHtml(daysOfWeek[i])}">${dayLetters[i]}</span>`;
+  }).join('');
+
+  const rangeLabel = `${weekDates[0].toLocaleDateString(undefined, dateFormat)} – ${weekDates[6].toLocaleDateString(undefined, dateFormat)}, ${weekDates[6].getFullYear()}`;
+
+  wrap.innerHTML = `
+    <div class="week-calendar-label">Week ${getISOWeekNumber(today)} · ${rangeLabel}</div>
+    <div class="week-calendar-days">${pills}</div>
+  `;
+}
+
+// Orders the current-week meals per the chosen "simple sort" mode.
+// Unassigned days/meal-times sort to the end rather than the beginning.
+function sortWeekMeals(weekMeals) {
+  const mode = state.weekSort || 'day';
+  const sorted = [...weekMeals];
+
+  const dayIndex = meal => (meal.day_of_week ? daysOfWeek.indexOf(meal.day_of_week) : daysOfWeek.length);
+  const timeIndex = meal => (meal.meal_time ? mealTimes.indexOf(meal.meal_time) : mealTimes.length);
+
+  if (mode === 'mealtime') {
+    sorted.sort((a, b) => timeIndex(a) - timeIndex(b) || a.meal_title.localeCompare(b.meal_title));
+  } else if (mode === 'title') {
+    sorted.sort((a, b) => a.meal_title.localeCompare(b.meal_title));
+  } else {
+    sorted.sort((a, b) => dayIndex(a) - dayIndex(b) || timeIndex(a) - timeIndex(b) || a.meal_title.localeCompare(b.meal_title));
+  }
+
+  return sorted;
+}
+
+// Quick-edit from the Week Menu card itself — sets a meal's day and/or meal
+// time without needing to open the full Edit Meal form.
+function updateMealSchedule(mealId, field, value) {
+  if (field !== 'day_of_week' && field !== 'meal_time') return;
+
+  const meal = state.meals.find(item => item.meal_id === mealId);
+  if (!meal) return;
+
+  meal[field] = value;
+  saveState();
+  renderWeekMeals();
+}
+
 function renderWeekMeals() {
-  const weekMeals = state.meals.filter(meal => meal.is_current_week).slice(0, 6);
+  const weekMeals = sortWeekMeals(state.meals.filter(meal => meal.is_current_week)).slice(0, MAX_WEEK_MEALS);
   const grid = document.getElementById('weekMealsGrid');
   const count = document.getElementById('weekMealCount');
-  count.textContent = `${weekMeals.length} / 6 meals`;
+  count.textContent = `${weekMeals.length} / ${MAX_WEEK_MEALS} meals`;
+
+  const sortSelect = document.getElementById('weekSortSelect');
+  if (sortSelect) sortSelect.value = state.weekSort || 'day';
 
   if (!weekMeals.length) {
     grid.innerHTML = '<p class="text-muted mb-0">No meals added to this week yet. Add some from Recipe Cards.</p>';
@@ -266,8 +360,19 @@ function renderWeekMeals() {
               </span>
 
               ${meal.is_favorite ? '<span class="badge badge-soft">Favorite</span>' : ''}
+              ${meal.meal_time ? `<span class="badge ${mealTimeBadgeClass[meal.meal_time] || 'text-bg-light'}">${escapeHtml(meal.meal_time)}</span>` : ''}
+              ${meal.day_of_week ? `<span class="badge text-bg-light">${escapeHtml(meal.day_of_week)}</span>` : ''}
+            </div>
 
-              <span class="badge text-bg-light">Current Week</span>
+            <div class="d-flex flex-wrap gap-2 mb-2 week-schedule-controls">
+              <select class="form-select form-select-sm" aria-label="Day for ${escapeHtml(meal.meal_title)}" onchange="updateMealSchedule('${meal.meal_id}', 'day_of_week', this.value)">
+                <option value="">Day…</option>
+                ${daysOfWeek.map(day => `<option value="${day}" ${meal.day_of_week === day ? 'selected' : ''}>${day}</option>`).join('')}
+              </select>
+              <select class="form-select form-select-sm" aria-label="Meal time for ${escapeHtml(meal.meal_title)}" onchange="updateMealSchedule('${meal.meal_id}', 'meal_time', this.value)">
+                <option value="">Meal…</option>
+                ${mealTimes.map(time => `<option value="${time}" ${meal.meal_time === time ? 'selected' : ''}>${time}</option>`).join('')}
+              </select>
             </div>
 
             <div class="d-flex gap-2 flex-wrap">
@@ -309,8 +414,9 @@ function renderRecipeCards() {
               ${(meal.recipe_icons || []).map(icon => `<span>${escapeHtml(icon)}</span>`).join('')}
             </div>
 
-            <div class="small text-muted mb-2">
-              ${meal.ingredients.length} ingredients
+            <div class="small text-muted mb-2 d-flex align-items-center gap-2 flex-wrap">
+              <span>${meal.ingredients.length} ingredients</span>
+              ${meal.meal_time ? `<span class="badge ${mealTimeBadgeClass[meal.meal_time] || 'text-bg-light'}">${escapeHtml(meal.meal_time)}</span>` : ''}
             </div>
 
             <div class="d-flex gap-2 flex-wrap">
@@ -481,6 +587,7 @@ function renderMealEditor() {
   document.getElementById('mealPreview').src = meal.meal_image || 'https://placehold.co/100x100?text=Meal';
   document.getElementById('mealFavorite').checked = meal.is_favorite;
   document.getElementById('mealActive').checked = meal.is_active;
+  document.getElementById('mealTimeSelect').value = meal.meal_time || '';
 
   renderIngredientEditorRows();
 }
@@ -568,6 +675,8 @@ function createNewMeal() {
     is_current_week: false,
     is_active: true,
     is_favorite: false,
+    day_of_week: '',
+    meal_time: '',
     recipe_icons: ['🍽', '❓', '❓'],
     ingredients: [],
     directions: [],
@@ -601,12 +710,18 @@ function toggleCurrentWeek(mealId) {
 
   const currentWeekMeals = state.meals.filter(item => item.is_current_week);
 
-  if (!meal.is_current_week && currentWeekMeals.length >= 6) {
-    alert('Maximum of 6 meals for the week.');
+  if (!meal.is_current_week && currentWeekMeals.length >= MAX_WEEK_MEALS) {
+    alert(`Maximum of ${MAX_WEEK_MEALS} meals for the week (one per day).`);
     return;
   }
 
   meal.is_current_week = !meal.is_current_week;
+
+  // A day assignment only means something while the meal is in the current
+  // week — clear it on removal so it doesn't carry stale info if re-added.
+  if (!meal.is_current_week) {
+    meal.day_of_week = '';
+  }
 
   saveState();
   renderWeekMeals();
@@ -737,6 +852,7 @@ function saveSelectedMeal(event) {
   meal.meal_description = document.getElementById('mealDescription').value.trim();
   meal.is_favorite = document.getElementById('mealFavorite').checked;
   meal.is_active = document.getElementById('mealActive').checked;
+  meal.meal_time = document.getElementById('mealTimeSelect').value;
 
   meal.ingredients = rows.map(row => {
     const normalized = normalizeName(row.name);
@@ -969,6 +1085,12 @@ function attachEvents() {
     removeIngredientFromSelectedMeal(Number(btn.dataset.index));
   });
 
+  document.getElementById('weekSortSelect').addEventListener('change', event => {
+    state.weekSort = event.target.value;
+    saveState();
+    renderWeekMeals();
+  });
+
   document.getElementById('groceryGroups').addEventListener('change', event => {
     if (!event.target.classList.contains('grocery-check')) return;
 
@@ -985,6 +1107,7 @@ async function init() {
   await loadInitialData();
   attachEvents();
   renderIntroInfo();
+  renderWeekCalendar();
   renderMealSelect();
   renderIngredientDatalist();
   renderWeekMeals();
