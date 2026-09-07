@@ -9,7 +9,7 @@
     href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
     rel="stylesheet"
   />
-  <link rel="stylesheet" href="css/styles.css?v=10" />
+  <link rel="stylesheet" href="css/styles.css?v=11" />
 </head>
 
 <body>
@@ -52,10 +52,9 @@
       </div>
     </div>
 
-    <div class="d-flex justify-content-between align-items-center mb-3 top-actions">
+    <div class="d-flex justify-content-center align-items-center gap-3 mb-3 top-actions">
       <button class="btn btn-primary" id="generateListBtn">Generate Grocery List</button>
       <button class="btn btn-outline-primary" id="addMealBtn" type="button">Add Meal</button>
-      <button class="btn btn-outline-success" id="shareRecipeBtn">Share Recipe Card</button>
     </div>
 
     <ul class="nav nav-pills mb-3" id="appTabs">
@@ -66,7 +65,7 @@
         <button class="nav-link" data-view="mealCardsView">🍽 Meal Cards</button>
       </li>
       <li class="nav-item">
-        <button class="nav-link" data-view="editView">✏️ Edit Recipe</button>
+        <button class="nav-link" data-view="recipeListView">📋 Recipes</button>
       </li>
       <li class="nav-item">
         <button class="nav-link" data-view="groceryView">🛒 Grocery List</button>
@@ -135,29 +134,35 @@
       </div>
     </section>
 
+    <section id="recipeListView" class="view-section d-none">
+      <div class="card section-card mb-3">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-center mb-2 flex-wrap gap-2">
+            <div>
+              <h2 class="h5 mb-1">Recipes</h2>
+              <p class="text-muted mb-0">Your dish pool — view, edit, or share any recipe. Assemble them into meals from Meal Cards.</p>
+            </div>
+            <button class="btn btn-primary" type="button" id="addNewRecipeBtn">+ Add New Recipe</button>
+          </div>
+          <div class="row g-3" id="recipeListGrid"></div>
+        </div>
+      </div>
+    </section>
+
     <section id="editView" class="view-section d-none">
       <div class="card section-card">
         <div class="card-body">
+          <button class="btn btn-sm btn-outline-secondary mb-3" id="backToRecipeListBtn">
+            ← Back to Recipes
+          </button>
+
           <h2 class="h5 mb-1">Edit Recipe</h2>
-          <p class="text-muted">Choose a recipe, edit it, or view it in full. Recipes are the reusable dish pool — assemble them into meals from Meal Cards.</p>
+          <p class="text-muted">Edit this recipe's details and ingredients.</p>
 
-          <div class="row g-2 align-items-end mb-3">
-            <div class="col-12 col-md-6">
-              <label for="recipeSelect" class="form-label">Choose Recipe to Edit</label>
-              <select id="recipeSelect" class="form-select"></select>
-            </div>
-
-            <div class="col-6 col-md-3">
-              <button class="btn btn-outline-dark w-100" type="button" id="viewSelectedRecipeBtn">
-                View Recipe
-              </button>
-            </div>
-
-            <div class="col-6 col-md-3">
-              <button class="btn btn-primary w-100" type="button" id="addNewRecipeBtn">
-                + Add New Recipe
-              </button>
-            </div>
+          <div class="mb-3">
+            <button class="btn btn-outline-dark" type="button" id="viewSelectedRecipeBtn">
+              View Recipe
+            </button>
           </div>
 
           <datalist id="ingredientNamesList"></datalist>
@@ -240,6 +245,22 @@
 
           <div id="groceryGroups"></div>
 
+          <hr class="my-4" />
+
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <div>
+              <h3 class="h6 mb-1">Other Items</h3>
+              <p class="text-muted small mb-0">Anything not tied to a recipe — soap, paper towels, and the like.</p>
+            </div>
+          </div>
+
+          <form id="extraItemForm" class="d-flex gap-2 mb-2">
+            <input type="text" id="extraItemInput" class="form-control form-control-sm" placeholder="e.g. Soap" aria-label="New item name" />
+            <button type="submit" class="btn btn-sm btn-outline-primary text-nowrap">Add Item</button>
+          </form>
+
+          <div id="extraItemsList"></div>
+
           <div class="mt-3 text-center">
             <button class="btn btn-outline-success" id="shareGroceryListBtn" type="button">Share Grocery List</button>
           </div>
@@ -270,6 +291,6 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="js/app.js?v=10"></script>
+  <script src="js/app.js?v=11"></script>
 </body>
 </html>

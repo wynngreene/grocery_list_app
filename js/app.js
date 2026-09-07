@@ -26,7 +26,7 @@ const STORAGE_KEY = 'weekly_grocery_app_state';
 // Shown on the intro screen. Bump APP_VERSION / APP_LAST_UPDATED together
 // with every update/change that ships — this is the running version number,
 // not tied to DATA_VERSION (which only tracks the starter-data shape).
-const APP_VERSION = '2.0';
+const APP_VERSION = '2.1';
 const APP_LAST_UPDATED = 'September 7, 2026';
 
 // Bump this whenever the starter data (data/recipes.json / data/week_meals.json /
@@ -83,6 +83,7 @@ const defaultState = {
   selectedWeekMealId: '',
   recipeDetailReturnView: 'weekView',
   groceryList: [],
+  extraGroceryItems: [],
   weekSort: 'day',
   grocerySort: 'category',
   ingredientSort: 'name'
@@ -195,6 +196,12 @@ function loadSavedState() {
       return false;
     }
 
+    // Additive fields introduced after this save was written — default them
+    // in rather than bumping DATA_VERSION and discarding the user's data.
+    if (!Array.isArray(parsed.extraGroceryItems)) {
+      parsed.extraGroceryItems = [];
+    }
+
     state = parsed;
     return true;
   } catch (error) {
@@ -241,6 +248,7 @@ async function loadInitialData() {
       selectedWeekMealId: weekMeals[0]?.week_meal_id || '',
       recipeDetailReturnView: 'weekView',
       groceryList: [],
+      extraGroceryItems: [],
       weekSort: 'day',
       grocerySort: 'category',
       ingredientSort: 'name',
@@ -285,14 +293,47 @@ function showView(viewId) {
   });
 }
 
-function renderRecipeSelect() {
-  const select = document.getElementById('recipeSelect');
-  if (!select) return;
+// The Recipes page: a browsable list of the whole dish pool, sorted
+// alphabetically, with View / Edit / Share actions on each card.
+function renderRecipeList() {
+  const grid = document.getElementById('recipeListGrid');
+  if (!grid) return;
 
-  select.innerHTML = state.recipes.map(recipe => `
-    <option value="${recipe.recipe_id}" ${recipe.recipe_id === state.selectedRecipeId ? 'selected' : ''}>
-      ${escapeHtml(recipe.recipe_title)}
-    </option>
+  if (!state.recipes.length) {
+    grid.innerHTML = '<p class="text-muted mb-0">No recipes yet. Use "+ Add New Recipe" to create one.</p>';
+    return;
+  }
+
+  const sortedRecipes = [...state.recipes].sort((a, b) => a.recipe_title.localeCompare(b.recipe_title));
+
+  grid.innerHTML = sortedRecipes.map(recipe => `
+    <div class="col-12 col-md-6">
+      <div class="card recipe-card h-100">
+        <div class="card-body d-flex gap-3">
+          <img class="recipe-thumb" src="${escapeHtml(recipe.recipe_image || 'https://placehold.co/100x100?text=Recipe')}" alt="${escapeHtml(recipe.recipe_title)}" />
+
+          <div class="flex-grow-1">
+            <div class="d-flex align-items-center gap-2 mb-1 flex-wrap">
+              <h3 class="h6 mb-0">${escapeHtml(recipe.recipe_title)}</h3>
+              <span class="badge badge-soft">${escapeHtml(dishRoleLabels[recipe.dish_role] || dishRoleLabels.either)}</span>
+            </div>
+            <p class="text-muted small mb-2">${escapeHtml(recipe.recipe_description)}</p>
+
+            <div class="small text-muted mb-2 d-flex align-items-center gap-2 flex-wrap">
+              <span>${recipe.ingredients.length} ingredients</span>
+              <span class="badge ${recipe.is_active ? 'text-bg-success' : 'text-bg-secondary'}">${recipe.is_active ? 'Active' : 'Inactive'}</span>
+              ${recipe.is_favorite ? '<span class="badge badge-soft">Favorite</span>' : ''}
+            </div>
+
+            <div class="d-flex gap-2 flex-wrap">
+              <button class="btn btn-sm btn-outline-dark" onclick="openRecipeDetail('${recipe.recipe_id}', 'recipeListView')">View</button>
+              <button class="btn btn-sm btn-outline-primary" onclick="openRecipeEditor('${recipe.recipe_id}')">Edit</button>
+              <button class="btn btn-sm btn-outline-success" onclick="exportRecipeCard('${recipe.recipe_id}')">Share</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   `).join('');
 }
 
@@ -687,7 +728,6 @@ function openRecipeDetail(recipeId, returnView) {
   state.selectedRecipeId = recipeId;
   state.recipeDetailReturnView = returnView || 'weekView';
   saveState();
-  renderRecipeSelect();
   renderRecipeDetail();
   showView('recipeDetailView');
 }
@@ -830,8 +870,6 @@ function ingredientSuggestions(inputValue) {
 }
 
 function renderRecipeEditor() {
-  renderRecipeSelect();
-
   const recipe = getRecipeById(state.selectedRecipeId);
   const form = document.getElementById('recipeForm');
 
@@ -921,7 +959,6 @@ function renderIngredientEditorRows() {
 function openRecipeEditor(recipeId) {
   state.selectedRecipeId = recipeId;
   saveState();
-  renderRecipeSelect();
   renderRecipeEditor();
   showView('editView');
 }
@@ -950,7 +987,7 @@ function createNewRecipe() {
   state.selectedRecipeId = newRecipe.recipe_id;
 
   saveState();
-  renderRecipeSelect();
+  renderRecipeList();
   renderRecipeEditor();
   renderMealCards();
   showView('editView');
@@ -1108,7 +1145,7 @@ function saveSelectedRecipe(event) {
   saveState();
   renderWeekMeals();
   renderMealCards();
-  renderRecipeSelect();
+  renderRecipeList();
   renderRecipeEditor();
   renderRecipeDetail();
   renderIngredientDatalist();
@@ -1240,31 +1277,95 @@ function renderGroceryList() {
     `).join('');
 }
 
-// Formats the current grocery list as readable plain text and copies it to
-// the clipboard (with a prompt() fallback), mirroring exportRecipeCard().
+// "Other Items" — a second, separate list on the Grocery List page for
+// anything that isn't tied to a recipe's ingredients (soap, paper towels,
+// etc.). Lives in its own state array so generateGroceryList() (which
+// rebuilds state.groceryList from the current week's meals) never touches it.
+function renderExtraGroceryItems() {
+  const wrapper = document.getElementById('extraItemsList');
+  if (!wrapper) return;
+
+  const items = state.extraGroceryItems || [];
+
+  if (!items.length) {
+    wrapper.innerHTML = '<p class="text-muted small mb-0">No extra items added yet.</p>';
+    return;
+  }
+
+  wrapper.innerHTML = `
+    <ul class="list-group">
+      ${items.map(item => `
+        <li class="list-group-item d-flex align-items-center gap-2">
+          <input class="form-check-input extra-item-check" type="checkbox" data-id="${escapeHtml(item.extra_item_id)}" ${item.checked ? 'checked' : ''} />
+          <span class="flex-grow-1 ${item.checked ? 'text-decoration-line-through text-muted' : ''}">${escapeHtml(item.item_name)}</span>
+          <button type="button" class="btn btn-sm btn-link text-danger p-0 remove-extra-item-btn" data-id="${escapeHtml(item.extra_item_id)}">Remove</button>
+        </li>
+      `).join('')}
+    </ul>
+  `;
+}
+
+function addExtraGroceryItem(name) {
+  const trimmed = (name || '').trim();
+  if (!trimmed) return;
+
+  if (!Array.isArray(state.extraGroceryItems)) state.extraGroceryItems = [];
+
+  state.extraGroceryItems.push({
+    extra_item_id: `extra_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`,
+    item_name: trimmed,
+    checked: false
+  });
+
+  saveState();
+  renderExtraGroceryItems();
+}
+
+function removeExtraGroceryItem(extraItemId) {
+  state.extraGroceryItems = (state.extraGroceryItems || []).filter(item => item.extra_item_id !== extraItemId);
+  saveState();
+  renderExtraGroceryItems();
+}
+
+// Formats the current grocery list (plus any "Other Items") as readable
+// plain text and copies it to the clipboard (with a prompt() fallback),
+// mirroring exportRecipeCard().
 function shareGroceryList() {
-  if (!state.groceryList.length) {
-    alert('Your grocery list is empty. Generate it first from the Week Menu.');
+  const extraItems = state.extraGroceryItems || [];
+
+  if (!state.groceryList.length && !extraItems.length) {
+    alert('Your grocery list is empty. Generate it first from the Week Menu, or add an item below.');
     return;
   }
 
   const lines = ['Pangea Grocery List (PGL) — Weekly Grocery List', ''];
 
-  const grouped = state.groceryList.reduce((acc, item) => {
-    if (!acc[item.ingredient_type]) acc[item.ingredient_type] = [];
-    acc[item.ingredient_type].push(item);
-    return acc;
-  }, {});
+  if (state.groceryList.length) {
+    const grouped = state.groceryList.reduce((acc, item) => {
+      if (!acc[item.ingredient_type]) acc[item.ingredient_type] = [];
+      acc[item.ingredient_type].push(item);
+      return acc;
+    }, {});
 
-  Object.entries(grouped).forEach(([group, items]) => {
-    lines.push(`${group}:`);
-    sortGroceryItems(items).forEach(item => {
-      const mealsLabel = item.meals.join(', ');
+    Object.entries(grouped).forEach(([group, items]) => {
+      lines.push(`${group}:`);
+      sortGroceryItems(items).forEach(item => {
+        const mealsLabel = item.meals.join(', ');
+        const checkedMark = item.checked ? ' [x]' : '';
+        lines.push(`  - ${item.ingredient_name} — ${mealsLabel}, total ${item.total_quantity_value} ${item.quantity_unit} · ${item.store_name}${checkedMark}`);
+      });
+      lines.push('');
+    });
+  }
+
+  if (extraItems.length) {
+    lines.push('Other Items:');
+    extraItems.forEach(item => {
       const checkedMark = item.checked ? ' [x]' : '';
-      lines.push(`  - ${item.ingredient_name} — ${mealsLabel}, total ${item.total_quantity_value} ${item.quantity_unit} · ${item.store_name}${checkedMark}`);
+      lines.push(`  - ${item.item_name}${checkedMark}`);
     });
     lines.push('');
-  });
+  }
 
   const listText = lines.join('\n').trim();
 
@@ -1428,10 +1529,6 @@ function attachEvents() {
 
   document.getElementById('resetEditorBtn').addEventListener('click', renderRecipeEditor);
 
-  document.getElementById('shareRecipeBtn').addEventListener('click', () => {
-    exportRecipeCard(state.selectedRecipeId);
-  });
-
   document.getElementById('backToWeekBtn').addEventListener('click', () => {
     showView(state.recipeDetailReturnView || 'weekView');
   });
@@ -1440,10 +1537,8 @@ function attachEvents() {
     showView('weekView');
   });
 
-  document.getElementById('recipeSelect').addEventListener('change', event => {
-    state.selectedRecipeId = event.target.value;
-    saveState();
-    renderRecipeEditor();
+  document.getElementById('backToRecipeListBtn').addEventListener('click', () => {
+    showView('recipeListView');
   });
 
   document.getElementById('viewSelectedRecipeBtn').addEventListener('click', () => {
@@ -1484,6 +1579,31 @@ function attachEvents() {
 
   document.getElementById('shareGroceryListBtn').addEventListener('click', shareGroceryList);
 
+  document.getElementById('extraItemForm').addEventListener('submit', event => {
+    event.preventDefault();
+    const input = document.getElementById('extraItemInput');
+    addExtraGroceryItem(input.value);
+    input.value = '';
+    input.focus();
+  });
+
+  document.getElementById('extraItemsList').addEventListener('change', event => {
+    if (!event.target.classList.contains('extra-item-check')) return;
+
+    const item = (state.extraGroceryItems || []).find(entry => entry.extra_item_id === event.target.dataset.id);
+    if (!item) return;
+
+    item.checked = event.target.checked;
+    saveState();
+    renderExtraGroceryItems();
+  });
+
+  document.getElementById('extraItemsList').addEventListener('click', event => {
+    const btn = event.target.closest('.remove-extra-item-btn');
+    if (!btn) return;
+    removeExtraGroceryItem(btn.dataset.id);
+  });
+
   document.getElementById('ingredientSortSelect').addEventListener('change', event => {
     state.ingredientSort = event.target.value;
     saveState();
@@ -1496,12 +1616,13 @@ async function init() {
   attachEvents();
   renderIntroInfo();
   renderWeekCalendar();
-  renderRecipeSelect();
+  renderRecipeList();
   renderIngredientDatalist();
   renderWeekMeals();
   renderMealCards();
   renderRecipeEditor();
   generateGroceryList();
+  renderExtraGroceryItems();
   renderAllIngredients();
 }
 
