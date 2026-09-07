@@ -1,0 +1,8 @@
+[
+  { "week_meal_id": "wm_001", "day_of_week": "", "meal_time": "", "main_recipe_id": "recipe_001", "side_recipe_ids": [], "is_current_week": true },
+  { "week_meal_id": "wm_002", "day_of_week": "", "meal_time": "", "main_recipe_id": "recipe_002", "side_recipe_ids": [], "is_current_week": true },
+  { "week_meal_id": "wm_003", "day_of_week": "", "meal_time": "", "main_recipe_id": "recipe_003", "side_recipe_ids": [], "is_current_week": true },
+  { "week_meal_id": "wm_004", "day_of_week": "", "meal_time": "", "main_recipe_id": "recipe_004", "side_recipe_ids": [], "is_current_week": true },
+  { "week_meal_id": "wm_005", "day_of_week": "", "meal_time": "", "main_recipe_id": "recipe_005", "side_recipe_ids": [], "is_current_week": true },
+  { "week_meal_id": "wm_006", "day_of_week": "", "meal_time": "Breakfast", "main_recipe_id": "recipe_006", "side_recipe_ids": ["recipe_007", "recipe_008"], "is_current_week": true }
+]

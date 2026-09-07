@@ -146,6 +146,64 @@ body {
   flex-shrink: 0;
 }
 
+/* Side-dish chips inside a Meal Card (assembled meal: main + sides) */
+.side-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #eef2ff;
+  color: #3b5bdb;
+  border: 1px solid #dbe4ff;
+  border-radius: 999px;
+  padding: 4px 6px 4px 12px;
+  font-size: 0.82rem;
+}
+
+.side-chip-remove {
+  background: none;
+  border: none;
+  color: inherit;
+  font-size: 0.9rem;
+  line-height: 1;
+  padding: 0 4px;
+  cursor: pointer;
+}
+
+.side-add-select {
+  max-width: 170px;
+}
+
+/* Meal Summary view — clickable rows for the entree and each side dish */
+.meal-summary-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px;
+  border-radius: 12px;
+  background: #f8f9fa;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.meal-summary-row:hover,
+.meal-summary-row:focus-within {
+  background: #eef1f4;
+}
+
+.meal-summary-thumb {
+  width: 64px;
+  height: 64px;
+  object-fit: cover;
+  border-radius: 10px;
+  background: #e9ecef;
+  flex-shrink: 0;
+}
+
+.week-sides-line {
+  font-size: 0.8rem;
+  color: #6c757d;
+}
+
 .brand-card {
   background: linear-gradient(135deg, #e8fff0, #fff9e6);
 }

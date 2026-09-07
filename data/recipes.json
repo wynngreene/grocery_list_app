@@ -1,0 +1,187 @@
+[
+  {
+    "recipe_id": "recipe_001",
+    "recipe_title": "Spaghetti with Ground Beef Meat Sauce",
+    "recipe_description": "Ground beef meat sauce with mushrooms, onions, and garlic over spaghetti noodles.",
+    "recipe_image": "https://placehold.co/900x400?text=Spaghetti",
+    "is_active": true,
+    "is_favorite": false,
+    "dish_role": "main",
+    "recipe_icons": ["🍝", "🥩", "🍳"],
+    "ingredients": [
+      { "recipe_ingredient_entry_id": "entry_001", "ingredient_id": "ing_001", "ingredient_name": "Spaghetti Noodles", "ingredient_type": "Dry Goods", "quantity_value": 1, "quantity_unit": "box", "store_name": "Walmart" },
+      { "recipe_ingredient_entry_id": "entry_002", "ingredient_id": "ing_002", "ingredient_name": "Ground Beef", "ingredient_type": "Meat", "quantity_value": 1, "quantity_unit": "lb", "store_name": "Costco" },
+      { "recipe_ingredient_entry_id": "entry_003", "ingredient_id": "ing_003", "ingredient_name": "Mushrooms", "ingredient_type": "Produce", "quantity_value": 8, "quantity_unit": "oz", "store_name": "King Soopers" },
+      { "recipe_ingredient_entry_id": "entry_004", "ingredient_id": "ing_004", "ingredient_name": "Yellow Onion", "ingredient_type": "Produce", "quantity_value": 1, "quantity_unit": "whole", "store_name": "King Soopers" },
+      { "recipe_ingredient_entry_id": "entry_005", "ingredient_id": "ing_005", "ingredient_name": "Garlic", "ingredient_type": "Produce", "quantity_value": 3, "quantity_unit": "cloves", "store_name": "King Soopers" },
+      { "recipe_ingredient_entry_id": "entry_006", "ingredient_id": "ing_006", "ingredient_name": "Marinara Sauce", "ingredient_type": "Sauces", "quantity_value": 24, "quantity_unit": "oz", "store_name": "Walmart" }
+    ],
+    "directions": [
+      { "step_id": "spaghetti_step_001", "step_title": "Cook the Noodles", "step_image": "https://placehold.co/600x300?text=Boil+Noodles", "step_text": "Bring a large pot of salted water to a boil and cook spaghetti noodles according to package directions; drain." },
+      { "step_id": "spaghetti_step_002", "step_title": "Sauté the Vegetables", "step_image": "https://placehold.co/600x300?text=Saute+Veggies", "step_text": "Dice the onion and mushrooms and mince the garlic. Sauté in a large pan over medium heat until softened." },
+      { "step_id": "spaghetti_step_003", "step_title": "Brown the Beef", "step_image": "https://placehold.co/600x300?text=Brown+Beef", "step_text": "Add ground beef to the pan with the vegetables and cook until browned. Drain any excess fat." },
+      { "step_id": "spaghetti_step_004", "step_title": "Simmer the Sauce", "step_image": "https://placehold.co/600x300?text=Simmer+Sauce", "step_text": "Stir in the marinara sauce and simmer with the beef and vegetables for 10–15 minutes." },
+      { "step_id": "spaghetti_step_005", "step_title": "Combine and Serve", "step_image": "https://placehold.co/600x300?text=Serve+Spaghetti", "step_text": "Toss the sauce with the cooked noodles, or serve the sauce over the noodles, and enjoy warm." }
+    ],
+    "credit": { "created_by": "Family Recipe", "shared_by": "Pangea Grocery List (PGL)", "source": "Home Kitchen", "date_added": "2026" }
+  },
+  {
+    "recipe_id": "recipe_002",
+    "recipe_title": "Beef Sausage with Veggies and Rice",
+    "recipe_description": "Beef sausage with bell peppers and onions served over rice.",
+    "recipe_image": "https://placehold.co/900x400?text=Beef+Sausage+%26+Rice",
+    "is_active": true,
+    "is_favorite": false,
+    "dish_role": "main",
+    "recipe_icons": ["🍚", "🌭", "🍳"],
+    "ingredients": [
+      { "recipe_ingredient_entry_id": "entry_007", "ingredient_id": "ing_007", "ingredient_name": "Beef Sausage", "ingredient_type": "Meat", "quantity_value": 1, "quantity_unit": "lb", "store_name": "Costco" },
+      { "recipe_ingredient_entry_id": "entry_008", "ingredient_id": "ing_008", "ingredient_name": "Bell Pepper", "ingredient_type": "Produce", "quantity_value": 2, "quantity_unit": "whole", "store_name": "King Soopers" },
+      { "recipe_ingredient_entry_id": "entry_009", "ingredient_id": "ing_004", "ingredient_name": "Yellow Onion", "ingredient_type": "Produce", "quantity_value": 1, "quantity_unit": "whole", "store_name": "King Soopers" },
+      { "recipe_ingredient_entry_id": "entry_010", "ingredient_id": "ing_005", "ingredient_name": "Garlic", "ingredient_type": "Produce", "quantity_value": 2, "quantity_unit": "cloves", "store_name": "King Soopers" },
+      { "recipe_ingredient_entry_id": "entry_011", "ingredient_id": "ing_009", "ingredient_name": "Rice", "ingredient_type": "Dry Goods", "quantity_value": 2, "quantity_unit": "cup", "store_name": "Walmart" }
+    ],
+    "directions": [
+      { "step_id": "sausage_rice_step_001", "step_title": "Cook the Rice", "step_image": "https://placehold.co/600x300?text=Cook+Rice", "step_text": "Prepare the rice according to package directions." },
+      { "step_id": "sausage_rice_step_002", "step_title": "Slice the Sausage and Veggies", "step_image": "https://placehold.co/600x300?text=Slice+Ingredients", "step_text": "Slice the beef sausage, bell peppers, and onion into bite-sized pieces; mince the garlic." },
+      { "step_id": "sausage_rice_step_003", "step_title": "Sauté Everything", "step_image": "https://placehold.co/600x300?text=Saute+Sausage", "step_text": "Cook the sausage in a skillet until browned, then add the peppers, onion, and garlic. Sauté until the vegetables are tender." },
+      { "step_id": "sausage_rice_step_004", "step_title": "Combine and Serve", "step_image": "https://placehold.co/600x300?text=Serve+Over+Rice", "step_text": "Spoon the sausage and vegetable mixture over the cooked rice and serve." }
+    ],
+    "credit": { "created_by": "Family Recipe", "shared_by": "Pangea Grocery List (PGL)", "source": "Home Kitchen", "date_added": "2026" }
+  },
+  {
+    "recipe_id": "recipe_003",
+    "recipe_title": "Chicken Salad with Vinaigrette",
+    "recipe_description": "A fresh salad with seasoned chicken and a light vinaigrette dressing.",
+    "recipe_image": "https://placehold.co/900x400?text=Chicken+Salad",
+    "is_active": true,
+    "is_favorite": false,
+    "dish_role": "either",
+    "recipe_icons": ["🥗", "🍗", "❄️"],
+    "ingredients": [
+      { "recipe_ingredient_entry_id": "entry_012", "ingredient_id": "ing_010", "ingredient_name": "Chicken Breast", "ingredient_type": "Meat", "quantity_value": 1.5, "quantity_unit": "lb", "store_name": "Costco" },
+      { "recipe_ingredient_entry_id": "entry_013", "ingredient_id": "ing_011", "ingredient_name": "Mixed Greens", "ingredient_type": "Produce", "quantity_value": 1, "quantity_unit": "bag", "store_name": "King Soopers" },
+      { "recipe_ingredient_entry_id": "entry_014", "ingredient_id": "ing_012", "ingredient_name": "Cherry Tomatoes", "ingredient_type": "Produce", "quantity_value": 1, "quantity_unit": "pint", "store_name": "King Soopers" },
+      { "recipe_ingredient_entry_id": "entry_015", "ingredient_id": "ing_013", "ingredient_name": "Cucumber", "ingredient_type": "Produce", "quantity_value": 1, "quantity_unit": "whole", "store_name": "King Soopers" },
+      { "recipe_ingredient_entry_id": "entry_016", "ingredient_id": "ing_014", "ingredient_name": "Vinaigrette Dressing", "ingredient_type": "Sauces", "quantity_value": 1, "quantity_unit": "bottle", "store_name": "Walmart" }
+    ],
+    "directions": [
+      { "step_id": "chicken_salad_step_001", "step_title": "Cook the Chicken", "step_image": "https://placehold.co/600x300?text=Cook+Chicken", "step_text": "Season the chicken breast and cook (grill or pan-sear) until fully cooked. Let it rest, then slice." },
+      { "step_id": "chicken_salad_step_002", "step_title": "Prep the Vegetables", "step_image": "https://placehold.co/600x300?text=Prep+Veggies", "step_text": "Wash and chop the mixed greens, cherry tomatoes, and cucumber." },
+      { "step_id": "chicken_salad_step_003", "step_title": "Assemble the Salad", "step_image": "https://placehold.co/600x300?text=Assemble+Salad", "step_text": "Combine the greens and vegetables in a large bowl and top with the sliced chicken." },
+      { "step_id": "chicken_salad_step_004", "step_title": "Dress and Serve", "step_image": "https://placehold.co/600x300?text=Add+Dressing", "step_text": "Drizzle with vinaigrette, toss, and serve." }
+    ],
+    "credit": { "created_by": "Family Recipe", "shared_by": "Pangea Grocery List (PGL)", "source": "Home Kitchen", "date_added": "2026" }
+  },
+  {
+    "recipe_id": "recipe_004",
+    "recipe_title": "Crock Pot BBQ Pulled Chicken Sandwich",
+    "recipe_description": "Slow cooker BBQ pulled chicken sandwiches topped with cheddar cheese and coleslaw.",
+    "recipe_image": "https://placehold.co/900x400?text=BBQ+Pulled+Chicken",
+    "is_active": true,
+    "is_favorite": false,
+    "dish_role": "main",
+    "recipe_icons": ["🥪", "🍗", "🍲"],
+    "ingredients": [
+      { "recipe_ingredient_entry_id": "entry_017", "ingredient_id": "ing_010", "ingredient_name": "Chicken Breast", "ingredient_type": "Meat", "quantity_value": 2, "quantity_unit": "lb", "store_name": "Costco" },
+      { "recipe_ingredient_entry_id": "entry_018", "ingredient_id": "ing_015", "ingredient_name": "BBQ Sauce", "ingredient_type": "Sauces", "quantity_value": 1, "quantity_unit": "bottle", "store_name": "Walmart" },
+      { "recipe_ingredient_entry_id": "entry_019", "ingredient_id": "ing_016", "ingredient_name": "Sandwich Buns", "ingredient_type": "Bakery", "quantity_value": 1, "quantity_unit": "pack", "store_name": "Walmart" },
+      { "recipe_ingredient_entry_id": "entry_020", "ingredient_id": "ing_017", "ingredient_name": "Cheddar Cheese", "ingredient_type": "Dairy", "quantity_value": 8, "quantity_unit": "oz", "store_name": "King Soopers" },
+      { "recipe_ingredient_entry_id": "entry_021", "ingredient_id": "ing_018", "ingredient_name": "Coleslaw Mix", "ingredient_type": "Produce", "quantity_value": 1, "quantity_unit": "bag", "store_name": "King Soopers" },
+      { "recipe_ingredient_entry_id": "entry_022", "ingredient_id": "ing_019", "ingredient_name": "Coleslaw Dressing", "ingredient_type": "Condiments", "quantity_value": 1, "quantity_unit": "bottle", "store_name": "Walmart" }
+    ],
+    "directions": [
+      { "step_id": "pulled_chicken_step_001", "step_title": "Slow Cook the Chicken", "step_image": "https://placehold.co/600x300?text=Slow+Cook", "step_text": "Place chicken breast and BBQ sauce in the crock pot and cook on low for 6–8 hours." },
+      { "step_id": "pulled_chicken_step_002", "step_title": "Shred the Chicken", "step_image": "https://placehold.co/600x300?text=Shred+Chicken", "step_text": "Remove the chicken, shred with two forks, and stir back into the BBQ sauce in the crock pot." },
+      { "step_id": "pulled_chicken_step_003", "step_title": "Make the Coleslaw", "step_image": "https://placehold.co/600x300?text=Make+Coleslaw", "step_text": "Toss the coleslaw mix with the coleslaw dressing." },
+      { "step_id": "pulled_chicken_step_004", "step_title": "Assemble the Sandwiches", "step_image": "https://placehold.co/600x300?text=Assemble+Sandwich", "step_text": "Pile the pulled chicken onto buns, top with cheddar cheese and coleslaw, and serve." }
+    ],
+    "credit": { "created_by": "Family Recipe", "shared_by": "Pangea Grocery List (PGL)", "source": "Home Kitchen", "date_added": "2026" }
+  },
+  {
+    "recipe_id": "recipe_005",
+    "recipe_title": "Minestrone Soup",
+    "recipe_description": "A hearty vegetable soup with tomatoes, potatoes, zucchini, and Italian seasoning.",
+    "recipe_image": "https://placehold.co/900x400?text=Minestrone+Soup",
+    "is_active": true,
+    "is_favorite": false,
+    "dish_role": "either",
+    "recipe_icons": ["🍜", "🥦", "🍲"],
+    "ingredients": [
+      { "recipe_ingredient_entry_id": "entry_023", "ingredient_id": "ing_020", "ingredient_name": "Canned Diced Tomatoes", "ingredient_type": "Canned Goods", "quantity_value": 1, "quantity_unit": "can", "store_name": "Walmart" },
+      { "recipe_ingredient_entry_id": "entry_024", "ingredient_id": "ing_004", "ingredient_name": "Yellow Onion", "ingredient_type": "Produce", "quantity_value": 1, "quantity_unit": "whole", "store_name": "King Soopers" },
+      { "recipe_ingredient_entry_id": "entry_025", "ingredient_id": "ing_003", "ingredient_name": "Mushrooms", "ingredient_type": "Produce", "quantity_value": 8, "quantity_unit": "oz", "store_name": "King Soopers" },
+      { "recipe_ingredient_entry_id": "entry_026", "ingredient_id": "ing_021", "ingredient_name": "Celery", "ingredient_type": "Produce", "quantity_value": 3, "quantity_unit": "stalks", "store_name": "King Soopers" },
+      { "recipe_ingredient_entry_id": "entry_027", "ingredient_id": "ing_022", "ingredient_name": "Chicken Broth", "ingredient_type": "Canned Goods", "quantity_value": 32, "quantity_unit": "oz", "store_name": "Walmart" },
+      { "recipe_ingredient_entry_id": "entry_028", "ingredient_id": "ing_023", "ingredient_name": "Garlic Seasoning", "ingredient_type": "Spices", "quantity_value": 1, "quantity_unit": "tsp", "store_name": "Walmart" },
+      { "recipe_ingredient_entry_id": "entry_029", "ingredient_id": "ing_024", "ingredient_name": "Onion Seasoning", "ingredient_type": "Spices", "quantity_value": 1, "quantity_unit": "tsp", "store_name": "Walmart" },
+      { "recipe_ingredient_entry_id": "entry_030", "ingredient_id": "ing_025", "ingredient_name": "Italian Seasoning", "ingredient_type": "Spices", "quantity_value": 1, "quantity_unit": "tsp", "store_name": "Walmart" },
+      { "recipe_ingredient_entry_id": "entry_031", "ingredient_id": "ing_026", "ingredient_name": "Jalapenos", "ingredient_type": "Produce", "quantity_value": 2, "quantity_unit": "whole", "store_name": "King Soopers" },
+      { "recipe_ingredient_entry_id": "entry_032", "ingredient_id": "ing_027", "ingredient_name": "Potatoes", "ingredient_type": "Produce", "quantity_value": 3, "quantity_unit": "whole", "store_name": "King Soopers" },
+      { "recipe_ingredient_entry_id": "entry_033", "ingredient_id": "ing_028", "ingredient_name": "Zucchini", "ingredient_type": "Produce", "quantity_value": 2, "quantity_unit": "whole", "store_name": "King Soopers" }
+    ],
+    "directions": [
+      { "step_id": "minestrone_step_001", "step_title": "Prep the Vegetables", "step_image": "https://placehold.co/600x300?text=Prep+Veggies", "step_text": "Dice the onion, celery, mushrooms, jalapeños, potatoes, and zucchini." },
+      { "step_id": "minestrone_step_002", "step_title": "Sauté the Aromatics", "step_image": "https://placehold.co/600x300?text=Saute+Aromatics", "step_text": "In a large pot, sauté the onion and celery with the garlic seasoning and onion seasoning until softened." },
+      { "step_id": "minestrone_step_003", "step_title": "Build the Soup", "step_image": "https://placehold.co/600x300?text=Build+Soup", "step_text": "Add the canned diced tomatoes, chicken broth, potatoes, mushrooms, zucchini, jalapeños, and Italian seasoning." },
+      { "step_id": "minestrone_step_004", "step_title": "Simmer", "step_image": "https://placehold.co/600x300?text=Simmer+Soup", "step_text": "Bring to a boil, then reduce heat and simmer until the potatoes are tender, about 20–25 minutes." },
+      { "step_id": "minestrone_step_005", "step_title": "Serve", "step_image": "https://placehold.co/600x300?text=Serve+Soup", "step_text": "Ladle into bowls and serve hot." }
+    ],
+    "credit": { "created_by": "Family Recipe", "shared_by": "Pangea Grocery List (PGL)", "source": "Home Kitchen", "date_added": "2026" }
+  },
+  {
+    "recipe_id": "recipe_006",
+    "recipe_title": "Breakfast Sausage",
+    "recipe_description": "Pan-browned breakfast sausage.",
+    "recipe_image": "https://placehold.co/900x400?text=Breakfast+Sausage",
+    "is_active": true,
+    "is_favorite": false,
+    "dish_role": "main",
+    "recipe_icons": ["🌭", "🍳"],
+    "ingredients": [
+      { "recipe_ingredient_entry_id": "entry_034", "ingredient_id": "ing_030", "ingredient_name": "Breakfast Sausage", "ingredient_type": "Meat", "quantity_value": 1, "quantity_unit": "lb", "store_name": "Costco" }
+    ],
+    "directions": [
+      { "step_id": "sausage_step_001", "step_title": "Cook the Sausage", "step_image": "https://placehold.co/600x300?text=Cook+Sausage", "step_text": "Brown the breakfast sausage in a skillet over medium heat until fully cooked." },
+      { "step_id": "sausage_step_002", "step_title": "Serve", "step_image": "", "step_text": "Serve hot, alongside the rest of the breakfast plate." }
+    ],
+    "credit": { "created_by": "Family Recipe", "shared_by": "Pangea Grocery List (PGL)", "source": "Home Kitchen", "date_added": "2026" }
+  },
+  {
+    "recipe_id": "recipe_007",
+    "recipe_title": "Grits",
+    "recipe_description": "Buttered grits.",
+    "recipe_image": "https://placehold.co/900x400?text=Grits",
+    "is_active": true,
+    "is_favorite": false,
+    "dish_role": "side",
+    "recipe_icons": ["🌾", "🧈"],
+    "ingredients": [
+      { "recipe_ingredient_entry_id": "entry_035", "ingredient_id": "ing_029", "ingredient_name": "Grits", "ingredient_type": "Dry Goods", "quantity_value": 1, "quantity_unit": "cup", "store_name": "Walmart" },
+      { "recipe_ingredient_entry_id": "entry_036", "ingredient_id": "ing_032", "ingredient_name": "Butter", "ingredient_type": "Dairy", "quantity_value": 2, "quantity_unit": "tbsp", "store_name": "King Soopers" }
+    ],
+    "directions": [
+      { "step_id": "grits_step_001", "step_title": "Cook the Grits", "step_image": "https://placehold.co/600x300?text=Cook+Grits", "step_text": "Bring water to a boil, whisk in the grits, and cook according to package directions. Stir in the butter." },
+      { "step_id": "grits_step_002", "step_title": "Serve", "step_image": "", "step_text": "Serve hot, alongside the rest of the breakfast plate." }
+    ],
+    "credit": { "created_by": "Family Recipe", "shared_by": "Pangea Grocery List (PGL)", "source": "Home Kitchen", "date_added": "2026" }
+  },
+  {
+    "recipe_id": "recipe_008",
+    "recipe_title": "Eggs",
+    "recipe_description": "Scrambled or fried eggs.",
+    "recipe_image": "https://placehold.co/900x400?text=Eggs",
+    "is_active": true,
+    "is_favorite": false,
+    "dish_role": "either",
+    "recipe_icons": ["🍳"],
+    "ingredients": [
+      { "recipe_ingredient_entry_id": "entry_037", "ingredient_id": "ing_031", "ingredient_name": "Eggs", "ingredient_type": "Eggs", "quantity_value": 6, "quantity_unit": "count", "store_name": "King Soopers" }
+    ],
+    "directions": [
+      { "step_id": "eggs_step_001", "step_title": "Cook the Eggs", "step_image": "https://placehold.co/600x300?text=Cook+Eggs", "step_text": "Scramble or fry the eggs in a pan to your preference." },
+      { "step_id": "eggs_step_002", "step_title": "Serve", "step_image": "", "step_text": "Serve hot, alongside the rest of the breakfast plate." }
+    ],
+    "credit": { "created_by": "Family Recipe", "shared_by": "Pangea Grocery List (PGL)", "source": "Home Kitchen", "date_added": "2026" }
+  }
+]

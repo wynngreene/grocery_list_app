@@ -9,7 +9,7 @@
     href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
     rel="stylesheet"
   />
-  <link rel="stylesheet" href="css/styles.css?v=9" />
+  <link rel="stylesheet" href="css/styles.css?v=10" />
 </head>
 
 <body>
@@ -54,7 +54,7 @@
 
     <div class="d-flex justify-content-between align-items-center mb-3 top-actions">
       <button class="btn btn-primary" id="generateListBtn">Generate Grocery List</button>
-      <button class="btn btn-outline-primary" id="addRecipeBtn" type="button">Add Recipe</button>
+      <button class="btn btn-outline-primary" id="addMealBtn" type="button">Add Meal</button>
       <button class="btn btn-outline-success" id="shareRecipeBtn">Share Recipe Card</button>
     </div>
 
@@ -63,10 +63,10 @@
         <button class="nav-link active" data-view="weekView">🏠 Week Menu</button>
       </li>
       <li class="nav-item">
-        <button class="nav-link" data-view="recipeView">🍳 Recipe Cards</button>
+        <button class="nav-link" data-view="mealCardsView">🍽 Meal Cards</button>
       </li>
       <li class="nav-item">
-        <button class="nav-link" data-view="editView">✏️ Edit Meal</button>
+        <button class="nav-link" data-view="editView">✏️ Edit Recipe</button>
       </li>
       <li class="nav-item">
         <button class="nav-link" data-view="groceryView">🛒 Grocery List</button>
@@ -101,12 +101,24 @@
       </div>
     </section>
 
-    <section id="recipeView" class="view-section d-none">
+    <section id="mealCardsView" class="view-section d-none">
       <div class="card section-card mb-3">
         <div class="card-body">
-          <h2 class="h5 mb-1">Recipe Cards</h2>
-          <p class="text-muted">Create, favorite, export, and share recipe cards.</p>
-          <div class="row g-3" id="recipeCardsGrid"></div>
+          <h2 class="h5 mb-1">Meal Cards</h2>
+          <p class="text-muted">Assemble a meal from your recipe pool: pick a main dish, add side dishes, and schedule it.</p>
+          <div class="row g-3" id="mealCardsGrid"></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="mealSummaryView" class="view-section d-none">
+      <div class="card section-card mb-3">
+        <div class="card-body">
+          <button class="btn btn-sm btn-outline-secondary mb-3" id="backFromMealSummaryBtn">
+            ← Back to Week Menu
+          </button>
+
+          <div id="mealSummaryContent"></div>
         </div>
       </div>
     </section>
@@ -115,7 +127,7 @@
       <div class="card section-card mb-3">
         <div class="card-body">
           <button class="btn btn-sm btn-outline-secondary mb-3" id="backToWeekBtn">
-            ← Back to Week Menu
+            ← Back
           </button>
 
           <div id="recipeDetailContent"></div>
@@ -126,13 +138,13 @@
     <section id="editView" class="view-section d-none">
       <div class="card section-card">
         <div class="card-body">
-          <h2 class="h5 mb-1">Edit Meal</h2>
-          <p class="text-muted">Choose a meal, edit it, or view the full recipe.</p>
+          <h2 class="h5 mb-1">Edit Recipe</h2>
+          <p class="text-muted">Choose a recipe, edit it, or view it in full. Recipes are the reusable dish pool — assemble them into meals from Meal Cards.</p>
 
           <div class="row g-2 align-items-end mb-3">
             <div class="col-12 col-md-6">
-              <label for="mealSelect" class="form-label">Choose Meal to Edit</label>
-              <select id="mealSelect" class="form-select"></select>
+              <label for="recipeSelect" class="form-label">Choose Recipe to Edit</label>
+              <select id="recipeSelect" class="form-select"></select>
             </div>
 
             <div class="col-6 col-md-3">
@@ -142,52 +154,52 @@
             </div>
 
             <div class="col-6 col-md-3">
-              <button class="btn btn-primary w-100" type="button" id="addNewMealBtn">
-                + Add New Meal
+              <button class="btn btn-primary w-100" type="button" id="addNewRecipeBtn">
+                + Add New Recipe
               </button>
             </div>
           </div>
 
           <datalist id="ingredientNamesList"></datalist>
 
-          <form id="mealForm" novalidate>
+          <form id="recipeForm" novalidate>
             <div class="row g-3">
               <div class="col-12 col-md-3">
-                <label class="form-label">Meal Image</label>
+                <label class="form-label">Recipe Image</label>
                 <div>
-                  <img id="mealPreview" class="meal-thumb" src="https://placehold.co/100x100?text=Meal" alt="Meal preview" />
+                  <img id="recipePreview" class="meal-thumb" src="https://placehold.co/100x100?text=Recipe" alt="Recipe preview" />
                 </div>
               </div>
 
               <div class="col-12 col-md-9">
                 <div class="mb-3">
-                  <label for="mealTitle" class="form-label">Title</label>
-                  <input id="mealTitle" class="form-control" type="text" />
+                  <label for="recipeTitle" class="form-label">Title</label>
+                  <input id="recipeTitle" class="form-control" type="text" />
                 </div>
 
                 <div class="mb-3">
-                  <label for="mealDescription" class="form-label">Description</label>
-                  <textarea id="mealDescription" class="form-control" rows="3"></textarea>
+                  <label for="recipeDescription" class="form-label">Description</label>
+                  <textarea id="recipeDescription" class="form-control" rows="3"></textarea>
                 </div>
 
                 <div class="form-check form-switch">
-                  <input class="form-check-input" type="checkbox" id="mealFavorite" />
-                  <label class="form-check-label" for="mealFavorite">Favorite meal</label>
+                  <input class="form-check-input" type="checkbox" id="recipeFavorite" />
+                  <label class="form-check-label" for="recipeFavorite">Favorite recipe</label>
                 </div>
 
                 <div class="form-check form-switch">
-                  <input class="form-check-input" type="checkbox" id="mealActive" />
-                  <label class="form-check-label" for="mealActive">Active meal</label>
+                  <input class="form-check-input" type="checkbox" id="recipeActive" />
+                  <label class="form-check-label" for="recipeActive">Active recipe</label>
                 </div>
 
                 <div class="mt-3" style="max-width: 220px;">
-                  <label for="mealTimeSelect" class="form-label">Meal Time</label>
-                  <select id="mealTimeSelect" class="form-select form-select-sm">
-                    <option value="">Unmarked</option>
-                    <option value="Breakfast">Breakfast</option>
-                    <option value="Lunch">Lunch</option>
-                    <option value="Dinner">Dinner</option>
+                  <label for="dishRoleSelect" class="form-label">Dish Role</label>
+                  <select id="dishRoleSelect" class="form-select form-select-sm">
+                    <option value="main">Main</option>
+                    <option value="side">Side</option>
+                    <option value="either">Either</option>
                   </select>
+                  <div class="form-text">Just a sorting hint when assembling meals — any recipe can still be used as a main or a side.</div>
                 </div>
               </div>
             </div>
@@ -202,7 +214,7 @@
             <div id="ingredientEditorList"></div>
 
             <div class="mt-3 d-flex gap-2">
-              <button class="btn btn-success" type="submit">Save Meal</button>
+              <button class="btn btn-success" type="submit">Save Recipe</button>
               <button class="btn btn-outline-secondary" type="button" id="resetEditorBtn">Reset</button>
             </div>
           </form>
@@ -258,6 +270,6 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="js/app.js?v=9"></script>
+  <script src="js/app.js?v=10"></script>
 </body>
 </html>
