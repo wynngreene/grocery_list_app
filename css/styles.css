@@ -1,5 +1,98 @@
+html, body {
+  margin: 0;
+  height: 100%;
+}
+
 body {
   background: #f7f7f9;
+}
+
+/* ---- Intro / splash screen ---- */
+.intro-screen {
+  box-sizing: border-box;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  padding: 40px 20px 28px;
+  text-align: center;
+  background-color: #a9d15a;
+  background-image:
+    linear-gradient(45deg, #bcdb75 25%, transparent 25%),
+    linear-gradient(-45deg, #bcdb75 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, #bcdb75 75%),
+    linear-gradient(-45deg, transparent 75%, #bcdb75 75%),
+    linear-gradient(135deg, #d7e878 0%, #93c15a 100%);
+  background-size: 48px 48px, 48px 48px, 48px 48px, 48px 48px, 100% 100%;
+  background-position: 0 0, 0 24px, 24px -24px, -24px 0px, 0 0;
+}
+
+.intro-top {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 12px;
+}
+
+.intro-title {
+  color: #ffffff;
+  font-weight: 800;
+  font-size: 2.2rem;
+  margin: 0;
+  text-shadow: 0 2px 10px rgba(0, 40, 0, 0.35);
+}
+
+.intro-subtitle {
+  color: #ffffff;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  opacity: 0.9;
+  margin: 4px 0 0;
+  text-shadow: 0 1px 6px rgba(0, 40, 0, 0.3);
+}
+
+.intro-middle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-grow: 1;
+}
+
+.intro-open-btn {
+  background: #ffffff;
+  color: #4c7a1f;
+  font-weight: 700;
+  font-size: 1.3rem;
+  padding: 14px 56px;
+  border-radius: 999px;
+  border: none;
+  box-shadow: 0 6px 20px rgba(0, 40, 0, 0.25);
+  transition: transform 0.15s ease;
+}
+
+.intro-open-btn:hover,
+.intro-open-btn:focus {
+  color: #4c7a1f;
+  transform: scale(1.05);
+}
+
+.intro-footer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px 18px;
+  color: #ffffff;
+  font-size: 0.85rem;
+  text-shadow: 0 1px 6px rgba(0, 40, 0, 0.3);
+}
+
+.intro-footer-label {
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  opacity: 0.85;
+  margin-right: 4px;
 }
 
 .app-shell {
@@ -94,6 +187,47 @@ body {
 
 .ingredient-row + .ingredient-row {
   border-top: 1px solid #eee;
+}
+
+/* Ingredient icons (TheMealDB image, or an emoji fallback by category) */
+.ingredient-icon-wrap,
+.grocery-icon-wrap,
+.row-icon-wrap {
+  display: inline-flex;
+  flex-shrink: 0;
+}
+
+.ingredient-icon,
+.ingredient-icon-fallback,
+.grocery-icon,
+.grocery-icon-fallback {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: #f1f3f5;
+  object-fit: contain;
+}
+
+.ingredient-icon-fallback,
+.grocery-icon-fallback {
+  align-items: center;
+  justify-content: center;
+  font-size: 1.3rem;
+}
+
+.row-icon,
+.row-icon-fallback {
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
+  background: #f1f3f5;
+  object-fit: contain;
+}
+
+.row-icon-fallback {
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
 }
 
 .list-group-item {

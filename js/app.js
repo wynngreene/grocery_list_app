@@ -23,10 +23,38 @@ const stores = ['Walmart', 'Costco', 'Target', 'King Soopers', 'Other'];
 
 const STORAGE_KEY = 'weekly_grocery_app_state';
 
+// Shown on the intro screen. Bump APP_VERSION / APP_LAST_UPDATED together
+// whenever you ship a meaningful update.
+const APP_VERSION = '1.0';
+const APP_LAST_UPDATED = 'September 2026';
+
 // Bump this whenever the starter data (data/meals.json / data/ingredients.json)
 // changes. A saved localStorage state from an older version is treated as
 // stale and discarded so everyone picks up the new defaults automatically.
-const DATA_VERSION = 2;
+const DATA_VERSION = 4;
+
+// Emoji shown for an ingredient when it has no image_url (or its image fails
+// to load), keyed by ingredient_type so the fallback is still meaningful.
+const categoryFallbackIcons = {
+  'Produce': '🥬',
+  'Fruit': '🍎',
+  'Meat': '🥩',
+  'Seafood': '🐟',
+  'Dairy': '🧀',
+  'Eggs': '🥚',
+  'Bakery': '🍞',
+  'Dry Goods': '🌾',
+  'Canned Goods': '🥫',
+  'Frozen': '🧊',
+  'Herbs': '🌿',
+  'Spices': '🧂',
+  'Sauces': '🍯',
+  'Condiments': '🧴',
+  'Beverages': '🥤',
+  'Snacks': '🍿',
+  'Household': '🧻',
+  'Other': '🍽'
+};
 
 const defaultState = {
   meals: [],
@@ -49,6 +77,43 @@ function escapeHtml(value) {
     '"': '&quot;',
     "'": '&#39;'
   }[char]));
+}
+
+// Looks up the master ingredient record behind a meal/grocery ingredient entry
+// (by id first, falling back to a normalized-name match), so an ingredient
+// image only needs to be sourced once, on the master record.
+function findMasterForIngredient(ingredient) {
+  if (!ingredient) return null;
+
+  if (ingredient.ingredient_id) {
+    const byId = state.masterIngredients.find(item => item.ingredient_id === ingredient.ingredient_id);
+    if (byId) return byId;
+  }
+
+  const normalized = normalizeName(ingredient.ingredient_name);
+  if (!normalized) return null;
+
+  return state.masterIngredients.find(item => item.normalized_name === normalized) || null;
+}
+
+// Renders a small ingredient thumbnail (TheMealDB image_url when the master
+// record has one) with an automatic emoji fallback if there's no image_url,
+// or if the image fails to load (e.g. offline, or the URL 404s).
+function ingredientIconMarkup(item, sizeClass) {
+  const cls = sizeClass || 'ingredient-icon';
+  const fallback = categoryFallbackIcons[item?.ingredient_type] || categoryFallbackIcons.Other;
+  const label = escapeHtml(item?.ingredient_name || '');
+
+  if (item?.image_url) {
+    return `
+      <span class="${cls}-wrap">
+        <img src="${escapeHtml(item.image_url)}" alt="${label}" class="${cls}" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-flex';" />
+        <span class="${cls}-fallback" style="display:none;">${fallback}</span>
+      </span>
+    `;
+  }
+
+  return `<span class="${cls}-wrap"><span class="${cls}-fallback" style="display:inline-flex;">${fallback}</span></span>`;
 }
 
 function saveState() {
@@ -118,6 +183,26 @@ async function loadInitialData() {
     state = structuredClone(defaultState);
     showLoadError();
   }
+}
+
+function renderIntroInfo() {
+  const versionEl = document.getElementById('introVersion');
+  const countEl = document.getElementById('introRecipeCount');
+  const updatedEl = document.getElementById('introLastUpdated');
+
+  if (versionEl) versionEl.textContent = APP_VERSION;
+  if (countEl) countEl.textContent = state.meals.length;
+  if (updatedEl) updatedEl.textContent = APP_LAST_UPDATED;
+}
+
+function openApp() {
+  document.getElementById('introScreen').classList.add('d-none');
+  document.getElementById('appShell').classList.remove('d-none');
+}
+
+function backToIntro() {
+  document.getElementById('appShell').classList.add('d-none');
+  document.getElementById('introScreen').classList.remove('d-none');
 }
 
 function showView(viewId) {
@@ -265,7 +350,7 @@ function renderRecipeDetail() {
   const directions = meal.directions || [];
   const credit = meal.credit || {
     created_by: 'Unknown',
-    shared_by: 'Paradise Grocers',
+    shared_by: 'Pangea Grocery List (PGL)',
     source: 'Family Recipe',
     date_added: '2026'
   };
@@ -296,14 +381,20 @@ function renderRecipeDetail() {
 
         ${meal.ingredients.length ? `
           <ul class="list-group">
-            ${meal.ingredients.map(ingredient => `
-              <li class="list-group-item d-flex justify-content-between">
-                <span>${escapeHtml(ingredient.ingredient_name)}</span>
-                <span class="text-muted">
-                  ${ingredient.quantity_value} ${escapeHtml(ingredient.quantity_unit)}
-                </span>
-              </li>
-            `).join('')}
+            ${meal.ingredients.map(ingredient => {
+              const master = findMasterForIngredient(ingredient);
+              return `
+                <li class="list-group-item d-flex justify-content-between align-items-center gap-2">
+                  <span class="d-flex align-items-center gap-2">
+                    ${ingredientIconMarkup(master || ingredient, 'row-icon')}
+                    ${escapeHtml(ingredient.ingredient_name)}
+                  </span>
+                  <span class="text-muted">
+                    ${ingredient.quantity_value} ${escapeHtml(ingredient.quantity_unit)}
+                  </span>
+                </li>
+              `;
+            }).join('')}
           </ul>
         ` : '<p class="text-muted mb-0">No ingredients added yet.</p>'}
       </div>
@@ -409,7 +500,8 @@ function renderIngredientEditorRows() {
 
   list.innerHTML = meal.ingredients.map((ingredient, index) => {
     const normalized = normalizeName(ingredient.ingredient_name);
-    const hasExactMatch = !normalized || state.masterIngredients.some(item => item.normalized_name === normalized);
+    const master = findMasterForIngredient(ingredient);
+    const hasExactMatch = !normalized || Boolean(master);
     const suggestions = hasExactMatch ? [] : ingredientSuggestions(ingredient.ingredient_name);
 
     let hintHtml = '';
@@ -426,7 +518,10 @@ function renderIngredientEditorRows() {
         </div>
         <div class="row g-2 align-items-end">
           <div class="col-12 col-md-4">
-            <label class="form-label">Ingredient</label>
+            <label class="form-label d-flex align-items-center gap-2">
+              ${ingredientIconMarkup(master || ingredient, 'row-icon')}
+              <span>Ingredient</span>
+            </label>
             <input class="form-control ingredient-name" data-index="${index}" list="ingredientNamesList" value="${escapeHtml(ingredient.ingredient_name)}" />
             ${hintHtml}
           </div>
@@ -478,7 +573,7 @@ function createNewMeal() {
     directions: [],
     credit: {
       created_by: 'You',
-      shared_by: 'Paradise Grocers',
+      shared_by: 'Pangea Grocery List (PGL)',
       source: 'Home Kitchen',
       date_added: String(new Date().getFullYear())
     }
@@ -686,10 +781,13 @@ function generateGroceryList() {
       const key = `${normalizeName(ingredient.ingredient_name)}__${ingredient.quantity_unit}__${ingredient.store_name}`;
 
       if (!merged.has(key)) {
+        const master = findMasterForIngredient(ingredient);
+
         merged.set(key, {
           key,
           ingredient_name: ingredient.ingredient_name,
           ingredient_type: ingredient.ingredient_type,
+          image_url: master?.image_url || '',
           total_quantity_value: Number(ingredient.quantity_value) || 0,
           quantity_unit: ingredient.quantity_unit,
           store_name: ingredient.store_name,
@@ -732,8 +830,9 @@ function renderGroceryList() {
       <ul class="list-group">
         ${items.map(item => `
           <li class="list-group-item">
-            <div class="form-check">
-              <input class="form-check-input grocery-check" type="checkbox" data-key="${escapeHtml(item.key)}" ${item.checked ? 'checked' : ''} />
+            <div class="form-check d-flex align-items-start gap-2">
+              <input class="form-check-input grocery-check mt-1" type="checkbox" data-key="${escapeHtml(item.key)}" ${item.checked ? 'checked' : ''} />
+              ${ingredientIconMarkup(item, 'grocery-icon')}
               <label class="form-check-label w-100 ${item.checked ? 'text-decoration-line-through text-muted' : ''}">
                 <div class="d-flex justify-content-between gap-2">
                   <strong>${escapeHtml(item.ingredient_name)}</strong>
@@ -773,10 +872,13 @@ function renderAllIngredients() {
         return `
           <li class="list-group-item">
             <div class="d-flex justify-content-between align-items-start gap-3">
-              <div>
-                <div><strong>${escapeHtml(item.ingredient_name)}</strong></div>
-                <div class="small text-muted">
-                  ${escapeHtml(item.ingredient_type)} · ${escapeHtml(item.default_unit)} · ${escapeHtml(item.default_store)}
+              <div class="d-flex align-items-center gap-2">
+                ${ingredientIconMarkup(item, 'ingredient-icon')}
+                <div>
+                  <div><strong>${escapeHtml(item.ingredient_name)}</strong></div>
+                  <div class="small text-muted">
+                    ${escapeHtml(item.ingredient_type)} · ${escapeHtml(item.default_unit)} · ${escapeHtml(item.default_store)}
+                  </div>
                 </div>
               </div>
 
@@ -798,7 +900,7 @@ function exportRecipeCard(mealId) {
   if (!meal) return;
 
   const recipeCard = {
-    app: 'Paradise Grocers',
+    app: 'Pangea Grocery List (PGL)',
     type: 'recipe_card',
     version: '1.0',
     recipe_title: meal.meal_title,
@@ -823,6 +925,9 @@ function exportRecipeCard(mealId) {
 }
 
 function attachEvents() {
+  document.getElementById('openAppBtn').addEventListener('click', openApp);
+  document.getElementById('backToIntroBtn').addEventListener('click', backToIntro);
+
   document.querySelectorAll('#appTabs .nav-link').forEach(btn => {
     btn.addEventListener('click', () => showView(btn.dataset.view));
   });
@@ -879,6 +984,7 @@ function attachEvents() {
 async function init() {
   await loadInitialData();
   attachEvents();
+  renderIntroInfo();
   renderMealSelect();
   renderIngredientDatalist();
   renderWeekMeals();

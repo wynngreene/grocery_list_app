@@ -23,7 +23,7 @@
       { "step_id": "spaghetti_step_004", "step_title": "Simmer the Sauce", "step_image": "https://placehold.co/600x300?text=Simmer+Sauce", "step_text": "Stir in the marinara sauce and simmer with the beef and vegetables for 10–15 minutes." },
       { "step_id": "spaghetti_step_005", "step_title": "Combine and Serve", "step_image": "https://placehold.co/600x300?text=Serve+Spaghetti", "step_text": "Toss the sauce with the cooked noodles, or serve the sauce over the noodles, and enjoy warm." }
     ],
-    "credit": { "created_by": "Family Recipe", "shared_by": "Paradise Grocers", "source": "Home Kitchen", "date_added": "2026" }
+    "credit": { "created_by": "Family Recipe", "shared_by": "Pangea Grocery List (PGL)", "source": "Home Kitchen", "date_added": "2026" }
   },
   {
     "meal_id": "meal_002",
@@ -47,7 +47,7 @@
       { "step_id": "sausage_rice_step_003", "step_title": "Sauté Everything", "step_image": "https://placehold.co/600x300?text=Saute+Sausage", "step_text": "Cook the sausage in a skillet until browned, then add the peppers, onion, and garlic. Sauté until the vegetables are tender." },
       { "step_id": "sausage_rice_step_004", "step_title": "Combine and Serve", "step_image": "https://placehold.co/600x300?text=Serve+Over+Rice", "step_text": "Spoon the sausage and vegetable mixture over the cooked rice and serve." }
     ],
-    "credit": { "created_by": "Family Recipe", "shared_by": "Paradise Grocers", "source": "Home Kitchen", "date_added": "2026" }
+    "credit": { "created_by": "Family Recipe", "shared_by": "Pangea Grocery List (PGL)", "source": "Home Kitchen", "date_added": "2026" }
   },
   {
     "meal_id": "meal_003",
@@ -71,7 +71,7 @@
       { "step_id": "chicken_salad_step_003", "step_title": "Assemble the Salad", "step_image": "https://placehold.co/600x300?text=Assemble+Salad", "step_text": "Combine the greens and vegetables in a large bowl and top with the sliced chicken." },
       { "step_id": "chicken_salad_step_004", "step_title": "Dress and Serve", "step_image": "https://placehold.co/600x300?text=Add+Dressing", "step_text": "Drizzle with vinaigrette, toss, and serve." }
     ],
-    "credit": { "created_by": "Family Recipe", "shared_by": "Paradise Grocers", "source": "Home Kitchen", "date_added": "2026" }
+    "credit": { "created_by": "Family Recipe", "shared_by": "Pangea Grocery List (PGL)", "source": "Home Kitchen", "date_added": "2026" }
   },
   {
     "meal_id": "meal_004",
@@ -96,7 +96,7 @@
       { "step_id": "pulled_chicken_step_003", "step_title": "Make the Coleslaw", "step_image": "https://placehold.co/600x300?text=Make+Coleslaw", "step_text": "Toss the coleslaw mix with the coleslaw dressing." },
       { "step_id": "pulled_chicken_step_004", "step_title": "Assemble the Sandwiches", "step_image": "https://placehold.co/600x300?text=Assemble+Sandwich", "step_text": "Pile the pulled chicken onto buns, top with cheddar cheese and coleslaw, and serve." }
     ],
-    "credit": { "created_by": "Family Recipe", "shared_by": "Paradise Grocers", "source": "Home Kitchen", "date_added": "2026" }
+    "credit": { "created_by": "Family Recipe", "shared_by": "Pangea Grocery List (PGL)", "source": "Home Kitchen", "date_added": "2026" }
   },
   {
     "meal_id": "meal_005",
@@ -127,7 +127,7 @@
       { "step_id": "minestrone_step_004", "step_title": "Simmer", "step_image": "https://placehold.co/600x300?text=Simmer+Soup", "step_text": "Bring to a boil, then reduce heat and simmer until the potatoes are tender, about 20–25 minutes." },
       { "step_id": "minestrone_step_005", "step_title": "Serve", "step_image": "https://placehold.co/600x300?text=Serve+Soup", "step_text": "Ladle into bowls and serve hot." }
     ],
-    "credit": { "created_by": "Family Recipe", "shared_by": "Paradise Grocers", "source": "Home Kitchen", "date_added": "2026" }
+    "credit": { "created_by": "Family Recipe", "shared_by": "Pangea Grocery List (PGL)", "source": "Home Kitchen", "date_added": "2026" }
   },
   {
     "meal_id": "meal_006",
@@ -150,6 +150,6 @@
       { "step_id": "breakfast_step_003", "step_title": "Cook the Eggs", "step_image": "https://placehold.co/600x300?text=Cook+Eggs", "step_text": "Scramble or fry the eggs in a separate pan to your preference." },
       { "step_id": "breakfast_step_004", "step_title": "Plate and Serve", "step_image": "https://placehold.co/600x300?text=Serve+Breakfast", "step_text": "Serve the grits, sausage, and eggs together on a plate." }
     ],
-    "credit": { "created_by": "Family Recipe", "shared_by": "Paradise Grocers", "source": "Home Kitchen", "date_added": "2026" }
+    "credit": { "created_by": "Family Recipe", "shared_by": "Pangea Grocery List (PGL)", "source": "Home Kitchen", "date_added": "2026" }
   }
 ]
