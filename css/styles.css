@@ -277,6 +277,43 @@ body {
   border-top: 1px solid #eee;
 }
 
+/* Custom ingredient-name autocomplete (Edit Recipe → Ingredients) */
+.autocomplete-wrap {
+  position: relative;
+}
+
+.autocomplete-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  z-index: 20;
+  margin: 4px 0 0;
+  padding: 4px;
+  list-style: none;
+  background: #fff;
+  border: 1px solid #dee2e6;
+  border-radius: 10px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.14);
+  max-height: 220px;
+  overflow-y: auto;
+}
+
+.autocomplete-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.88rem;
+}
+
+.autocomplete-item:hover,
+.autocomplete-item.active {
+  background: #eef2ff;
+}
+
 /* Week calendar strip (subtle date/week-number display above the week menu) */
 .week-calendar-strip {
   text-align: center;

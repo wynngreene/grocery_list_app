@@ -26,7 +26,7 @@ const STORAGE_KEY = 'weekly_grocery_app_state';
 // Shown on the intro screen. Bump APP_VERSION / APP_LAST_UPDATED together
 // with every update/change that ships — this is the running version number,
 // not tied to DATA_VERSION (which only tracks the starter-data shape).
-const APP_VERSION = '2.1';
+const APP_VERSION = '2.2';
 const APP_LAST_UPDATED = 'September 7, 2026';
 
 // Bump this whenever the starter data (data/recipes.json / data/week_meals.json /
@@ -337,14 +337,6 @@ function renderRecipeList() {
   `).join('');
 }
 
-function renderIngredientDatalist() {
-  const datalist = document.getElementById('ingredientNamesList');
-  if (!datalist) return;
-
-  datalist.innerHTML = state.masterIngredients
-    .map(item => `<option value="${escapeHtml(item.ingredient_name)}"></option>`)
-    .join('');
-}
 
 // ISO-8601 week number for a given date (week 1 is the week containing the
 // year's first Thursday). Used only for the subtle "Week NN" label.
@@ -860,13 +852,93 @@ function renderRecipeDetail() {
   `;
 }
 
-function ingredientSuggestions(inputValue) {
+// Matches master ingredients against typed text (substring match on the
+// normalized name), with names that START WITH what was typed ranked above
+// names that merely contain it somewhere in the middle. Used both for the
+// static "Did you mean" hint and the live autocomplete dropdown below.
+function ingredientSuggestions(inputValue, limit = 5) {
   const normalized = normalizeName(inputValue);
   if (!normalized) return [];
 
-  return state.masterIngredients.filter(item =>
-    item.normalized_name.includes(normalized)
-  ).slice(0, 5);
+  const matches = state.masterIngredients.filter(item => item.normalized_name.includes(normalized));
+
+  matches.sort((a, b) => {
+    const aStarts = a.normalized_name.startsWith(normalized) ? 0 : 1;
+    const bStarts = b.normalized_name.startsWith(normalized) ? 0 : 1;
+    return aStarts - bStarts || a.ingredient_name.localeCompare(b.ingredient_name);
+  });
+
+  return matches.slice(0, limit);
+}
+
+// Transient UI state for the ingredient-name autocomplete dropdown — which
+// ingredient row it belongs to, which suggestion (if any) is keyboard-active,
+// and the current match list. Not part of app `state` (never persisted).
+let ingredientAutocomplete = { rowIndex: null, activeIndex: -1, matches: [] };
+
+function closeIngredientAutocomplete() {
+  document.querySelectorAll('.autocomplete-dropdown').forEach(el => {
+    el.classList.add('d-none');
+    el.innerHTML = '';
+  });
+  ingredientAutocomplete = { rowIndex: null, activeIndex: -1, matches: [] };
+}
+
+function renderIngredientAutocompleteDropdown() {
+  const { rowIndex, activeIndex, matches } = ingredientAutocomplete;
+  if (rowIndex === null) return;
+
+  const dropdown = document.querySelector(`.autocomplete-dropdown[data-index="${rowIndex}"]`);
+  if (!dropdown) return;
+
+  dropdown.innerHTML = matches.map((item, i) => `
+    <li class="autocomplete-item ${i === activeIndex ? 'active' : ''}" data-name="${escapeHtml(item.ingredient_name)}">
+      ${ingredientIconMarkup(item, 'row-icon')}
+      <span class="flex-grow-1">${escapeHtml(item.ingredient_name)}</span>
+      <span class="text-muted small">${escapeHtml(item.ingredient_type)}</span>
+    </li>
+  `).join('');
+
+  dropdown.classList.remove('d-none');
+}
+
+function openIngredientAutocomplete(rowIndex, inputValue) {
+  const matches = ingredientSuggestions(inputValue, 8);
+
+  if (!matches.length) {
+    closeIngredientAutocomplete();
+    return;
+  }
+
+  ingredientAutocomplete = { rowIndex, activeIndex: -1, matches };
+  renderIngredientAutocompleteDropdown();
+}
+
+// Applies a chosen suggestion to the given ingredient row (capturing every
+// row's current on-screen values first, same pattern as add/remove-row, so
+// nothing the user typed elsewhere on the form is lost), then re-renders so
+// the row picks up the exact-match icon and drops the "Did you mean" hint.
+function selectIngredientAutocomplete(rowIndex, name) {
+  const recipe = getRecipeById(state.selectedRecipeId);
+  if (!recipe) return;
+
+  const capturedRows = captureIngredientRowsFromForm(recipe);
+  if (capturedRows && capturedRows[rowIndex]) {
+    capturedRows[rowIndex].ingredient_name = name;
+    recipe.ingredients = capturedRows;
+  }
+
+  closeIngredientAutocomplete();
+  saveState();
+  renderIngredientEditorRows();
+
+  requestAnimationFrame(() => {
+    const qtyInput = document.querySelectorAll('.ingredient-qty')[rowIndex];
+    if (qtyInput) {
+      qtyInput.focus();
+      qtyInput.select();
+    }
+  });
 }
 
 function renderRecipeEditor() {
@@ -898,6 +970,10 @@ function renderIngredientEditorRows() {
   const list = document.getElementById('ingredientEditorList');
   if (!recipe || !list) return;
 
+  // The rows are about to be rebuilt, so any open dropdown's DOM reference
+  // would go stale — reset the (non-persisted) autocomplete UI state.
+  ingredientAutocomplete = { rowIndex: null, activeIndex: -1, matches: [] };
+
   if (!recipe.ingredients.length) {
     list.innerHTML = '<p class="text-muted mb-0">No ingredients yet. Click "Add Ingredient" to start.</p>';
     return;
@@ -927,7 +1003,10 @@ function renderIngredientEditorRows() {
               ${ingredientIconMarkup(master || ingredient, 'row-icon')}
               <span>Ingredient</span>
             </label>
-            <input class="form-control ingredient-name" data-index="${index}" list="ingredientNamesList" value="${escapeHtml(ingredient.ingredient_name)}" />
+            <div class="autocomplete-wrap">
+              <input class="form-control ingredient-name" data-index="${index}" autocomplete="off" value="${escapeHtml(ingredient.ingredient_name)}" />
+              <ul class="autocomplete-dropdown d-none" data-index="${index}"></ul>
+            </div>
             ${hintHtml}
           </div>
           <div class="col-4 col-md-2">
@@ -1148,7 +1227,6 @@ function saveSelectedRecipe(event) {
   renderRecipeList();
   renderRecipeEditor();
   renderRecipeDetail();
-  renderIngredientDatalist();
   generateGroceryList();
   renderAllIngredients();
 
@@ -1548,10 +1626,69 @@ function attachEvents() {
   document.getElementById('addNewRecipeBtn').addEventListener('click', createNewRecipe);
   document.getElementById('addMealBtn').addEventListener('click', createNewWeekMeal);
 
-  document.getElementById('ingredientEditorList').addEventListener('click', event => {
-    const btn = event.target.closest('.remove-ingredient-btn');
-    if (!btn) return;
-    removeIngredientFromSelectedRecipe(Number(btn.dataset.index));
+  const ingredientEditorList = document.getElementById('ingredientEditorList');
+
+  ingredientEditorList.addEventListener('click', event => {
+    const removeBtn = event.target.closest('.remove-ingredient-btn');
+    if (removeBtn) {
+      removeIngredientFromSelectedRecipe(Number(removeBtn.dataset.index));
+      return;
+    }
+
+    const suggestionItem = event.target.closest('.autocomplete-item');
+    if (suggestionItem && ingredientAutocomplete.rowIndex !== null) {
+      selectIngredientAutocomplete(ingredientAutocomplete.rowIndex, suggestionItem.dataset.name);
+    }
+  });
+
+  // Keep focus on the input when a suggestion is clicked, so the click still
+  // registers instead of the dropdown disappearing out from under it first.
+  ingredientEditorList.addEventListener('mousedown', event => {
+    if (event.target.closest('.autocomplete-item')) {
+      event.preventDefault();
+    }
+  });
+
+  ingredientEditorList.addEventListener('input', event => {
+    if (!event.target.classList.contains('ingredient-name')) return;
+    openIngredientAutocomplete(Number(event.target.dataset.index), event.target.value);
+  });
+
+  ingredientEditorList.addEventListener('keydown', event => {
+    if (!event.target.classList.contains('ingredient-name')) return;
+
+    const rowIndex = Number(event.target.dataset.index);
+    if (ingredientAutocomplete.rowIndex !== rowIndex) return;
+
+    const { matches, activeIndex } = ingredientAutocomplete;
+    if (!matches.length) return;
+
+    if (event.key === 'ArrowDown') {
+      event.preventDefault();
+      ingredientAutocomplete.activeIndex = (activeIndex + 1) % matches.length;
+      renderIngredientAutocompleteDropdown();
+    } else if (event.key === 'ArrowUp') {
+      event.preventDefault();
+      ingredientAutocomplete.activeIndex = (activeIndex - 1 + matches.length) % matches.length;
+      renderIngredientAutocompleteDropdown();
+    } else if (event.key === 'Enter' && activeIndex >= 0) {
+      event.preventDefault();
+      selectIngredientAutocomplete(rowIndex, matches[activeIndex].ingredient_name);
+    } else if (event.key === 'Escape') {
+      closeIngredientAutocomplete();
+    }
+  });
+
+  // A genuine click-away closes the dropdown; the short delay gives a
+  // pending suggestion click (mousedown already prevented the blur above,
+  // but this is a safety net for touch/other input methods) time to land.
+  ingredientEditorList.addEventListener('focusout', event => {
+    if (!event.target.classList.contains('ingredient-name')) return;
+    setTimeout(() => {
+      if (!document.activeElement || !document.activeElement.classList.contains('ingredient-name')) {
+        closeIngredientAutocomplete();
+      }
+    }, 150);
   });
 
   document.getElementById('weekSortSelect').addEventListener('change', event => {
@@ -1617,7 +1754,6 @@ async function init() {
   renderIntroInfo();
   renderWeekCalendar();
   renderRecipeList();
-  renderIngredientDatalist();
   renderWeekMeals();
   renderMealCards();
   renderRecipeEditor();
