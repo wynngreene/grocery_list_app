@@ -26,7 +26,7 @@ const STORAGE_KEY = 'weekly_grocery_app_state';
 // Shown on the intro screen. Bump APP_VERSION / APP_LAST_UPDATED together
 // with every update/change that ships — this is the running version number,
 // not tied to DATA_VERSION (which only tracks the starter-data shape).
-const APP_VERSION = '1.1';
+const APP_VERSION = '1.2';
 const APP_LAST_UPDATED = 'September 7, 2026';
 
 // Bump this whenever the starter data (data/meals.json / data/ingredients.json)
@@ -313,8 +313,10 @@ function sortWeekMeals(weekMeals) {
   return sorted;
 }
 
-// Quick-edit from the Week Menu card itself — sets a meal's day and/or meal
-// time without needing to open the full Edit Meal form.
+// Quick-edit from the Recipe Cards page — sets a meal's day and/or meal time
+// without needing to open the full Edit Meal form. Refreshes both Recipe
+// Cards (where the controls live) and Week Menu (which displays them as
+// read-only badges) since either view might be showing this meal.
 function updateMealSchedule(mealId, field, value) {
   if (field !== 'day_of_week' && field !== 'meal_time') return;
 
@@ -323,6 +325,7 @@ function updateMealSchedule(mealId, field, value) {
 
   meal[field] = value;
   saveState();
+  renderRecipeCards();
   renderWeekMeals();
 }
 
@@ -362,17 +365,6 @@ function renderWeekMeals() {
               ${meal.is_favorite ? '<span class="badge badge-soft">Favorite</span>' : ''}
               ${meal.meal_time ? `<span class="badge ${mealTimeBadgeClass[meal.meal_time] || 'text-bg-light'}">${escapeHtml(meal.meal_time)}</span>` : ''}
               ${meal.day_of_week ? `<span class="badge text-bg-light">${escapeHtml(meal.day_of_week)}</span>` : ''}
-            </div>
-
-            <div class="d-flex flex-wrap gap-2 mb-2 week-schedule-controls">
-              <select class="form-select form-select-sm" aria-label="Day for ${escapeHtml(meal.meal_title)}" onchange="updateMealSchedule('${meal.meal_id}', 'day_of_week', this.value)">
-                <option value="">Day…</option>
-                ${daysOfWeek.map(day => `<option value="${day}" ${meal.day_of_week === day ? 'selected' : ''}>${day}</option>`).join('')}
-              </select>
-              <select class="form-select form-select-sm" aria-label="Meal time for ${escapeHtml(meal.meal_title)}" onchange="updateMealSchedule('${meal.meal_id}', 'meal_time', this.value)">
-                <option value="">Meal…</option>
-                ${mealTimes.map(time => `<option value="${time}" ${meal.meal_time === time ? 'selected' : ''}>${time}</option>`).join('')}
-              </select>
             </div>
 
             <div class="d-flex gap-2 flex-wrap">
@@ -417,6 +409,18 @@ function renderRecipeCards() {
             <div class="small text-muted mb-2 d-flex align-items-center gap-2 flex-wrap">
               <span>${meal.ingredients.length} ingredients</span>
               ${meal.meal_time ? `<span class="badge ${mealTimeBadgeClass[meal.meal_time] || 'text-bg-light'}">${escapeHtml(meal.meal_time)}</span>` : ''}
+              ${meal.day_of_week ? `<span class="badge text-bg-light">${escapeHtml(meal.day_of_week)}</span>` : ''}
+            </div>
+
+            <div class="d-flex flex-wrap gap-2 mb-2 week-schedule-controls">
+              <select class="form-select form-select-sm" aria-label="Day for ${escapeHtml(meal.meal_title)}" onchange="updateMealSchedule('${meal.meal_id}', 'day_of_week', this.value)">
+                <option value="">Day…</option>
+                ${daysOfWeek.map(day => `<option value="${day}" ${meal.day_of_week === day ? 'selected' : ''}>${day}</option>`).join('')}
+              </select>
+              <select class="form-select form-select-sm" aria-label="Meal time for ${escapeHtml(meal.meal_title)}" onchange="updateMealSchedule('${meal.meal_id}', 'meal_time', this.value)">
+                <option value="">Meal…</option>
+                ${mealTimes.map(time => `<option value="${time}" ${meal.meal_time === time ? 'selected' : ''}>${time}</option>`).join('')}
+              </select>
             </div>
 
             <div class="d-flex gap-2 flex-wrap">
@@ -1078,6 +1082,7 @@ function attachEvents() {
   });
 
   document.getElementById('addNewMealBtn').addEventListener('click', createNewMeal);
+  document.getElementById('addRecipeBtn').addEventListener('click', createNewMeal);
 
   document.getElementById('ingredientEditorList').addEventListener('click', event => {
     const btn = event.target.closest('.remove-ingredient-btn');
